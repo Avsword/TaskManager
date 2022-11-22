@@ -1,0 +1,30 @@
+.allTasks,
+.allCompleted {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+/* Completed's colour will be adjusted later, but it will have the same inital settings for consistency */
+.task,
+.completed {
+  background-color: #ebeee6;
+  filter: brightness(90%);
+  max-width: 30em;
+  max-height: 20em;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 8%;
+
+  transition: all 0.5s;
+}
+.task:hover,
+.completed:hover {
+  transition: all 0.5s;
+  filter: brightness(70%);
+}
+
+/* Below the css for the completed tasks */
+
+.completed {
+}

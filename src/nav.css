@@ -1,0 +1,23 @@
+nav {
+  padding: 2px 0px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-item {
+  display: inline;
+  border: 2px solid black;
+  border-radius: 4px;
+  margin: 9px;
+  padding: 2px;
+  box-shadow: 2px 3px;
+}
+a {
+  color: #6e0000;
+  text-decoration: none;
+}
+ul {
+  padding-left: 0;
+}

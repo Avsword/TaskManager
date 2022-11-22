@@ -1,0 +1,28 @@
+{
+  "tasks": [
+    {
+      "title": "Code this assignment",
+      "description": "I would really enjoy it, if this project would be successful.",
+      "deadline": "12-08-2022",
+      "timeleft": 0,
+      "hoursSpent": 1,
+      "completed": false
+    },
+    {
+      "title": "Finish the Jaalto testing report",
+      "description": "It's not that I dislike it, we just could've had testing homework instead of a big  essay",
+      "deadline": "12-08-2022",
+      "timeleft": 6,
+      "hoursSpent": 1,
+      "completed": false
+    },
+    {
+      "title": "Usability and testing report",
+      "description": "Should be easy enough, but we'll see",
+      "deadline": "12-08-2022",
+      "timeleft": 0,
+      "hoursSpent": 4,
+      "completed": true
+    }
+  ]
+}
