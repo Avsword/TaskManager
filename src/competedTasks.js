@@ -14,14 +14,6 @@ class completed extends React.Component {
   }
 
   componentDidMount() {
-    let newDate = new Date();
-    let date = newDate.getDate();
-    let month = newDate.getMonth() + 1;
-    let year = newDate.getFullYear();
-
-    console.log("current date: ", date, month, year);
-    /* const id = GetParams();
-      console.log(id); */
     api.call("/").then((response) => {
       //List full of all the tasks
       let list = response.data;
@@ -45,10 +37,8 @@ class completed extends React.Component {
 
     let completedsmap = this.state.completed.map((item, i) => (
       <div key={i + "wrapper"} className="completed">
-        <span class="material-symbols-outlined">done</span>
+        <span className="material-symbols-outlined">done</span>
         <h1 key={i + "h1"}>{item.title}</h1>{" "}
-        <h2 key={i + "daysleft"}>Days left: {item.timeleft}</h2>
-        <p key={i + "deadline"}>Deadline: {item.deadline}</p>
         <p key={i + "p"}>{item.description}</p>
         <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>
       </div>

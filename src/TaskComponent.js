@@ -51,14 +51,12 @@ class Todo extends React.Component {
   }
 
   componentDidMount() {
+    //TODO: Implement days left, taskLeft state in elements.
     let newDate = new Date();
-    let date = newDate.getDate();
-    let month = newDate.getMonth() + 1;
-    let year = newDate.getFullYear();
+    let currdate = newDate.getDate();
+    let currmonth = newDate.getMonth() + 1;
+    let curryear = newDate.getFullYear();
 
-    console.log("current date: ", date, month, year);
-    /* const id = GetParams();
-    console.log(id); */
     api.call("/").then((response) => {
       //List full of all the tasks
       let list = response.data;
@@ -67,6 +65,16 @@ class Todo extends React.Component {
       //TODO: Convert deadline to time left:
       list.forEach((element) => {
         if (!element.completed) {
+          let deadlineDate = new Date(element.deadline);
+
+          //Can do the calculation here, ok ok pog.
+          //Calculate the difference of years and months in to days, since we want a "days left"-tab.
+          let years = (deadlineDate.getFullYear() - curryear) * 365;
+          let month = (deadlineDate.getMonth() + 1 - currmonth) * 30;
+          let date = deadlineDate.getDate() - currdate;
+
+          element.timeleft = years + month + date;
+
           todolist.push(element);
         }
       });
