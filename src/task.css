@@ -8,6 +8,8 @@
 /* Completed's colour will be adjusted later, but it will have the same inital settings for consistency */
 .task,
 .completed {
+  /* flex 1 for even sizing */
+  flex: 1;
   background-color: #ebeee6;
   filter: brightness(90%);
   max-width: 30em;
@@ -25,6 +27,3 @@
 }
 
 /* Below the css for the completed tasks */
-
-.completed {
-}
