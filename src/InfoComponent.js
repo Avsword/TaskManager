@@ -25,7 +25,8 @@ function InfoComponent() {
 }
 function Subpage() {
   const { subpageId } = useParams();
-  console.log(subpageId);
+  /* console.log(subpageId); */
+
   switch (subpageId) {
     case undefined:
     case "author":

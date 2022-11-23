@@ -3,17 +3,18 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
+  flex-wrap: wrap;
 }
 /* Completed's colour will be adjusted later, but it will have the same inital settings for consistency */
 .task,
 .completed {
   /* flex 1 for even sizing */
   flex: 1;
-  flex-wrap: wrap;
+
   background-color: #ebeee6;
   filter: brightness(90%);
   max-width: 20em;
-  max-height: fit-content;
+  /* max-height: fit-content; */
   margin: 20px;
   padding: 15px;
   border-radius: 8%;

@@ -12,35 +12,12 @@ nav {
   border-radius: 4px;
   margin: 9px;
   padding: 2px;
-  box-shadow: 2px 3px;
 
-  transition: all 0.5s;
+  transition: all 0.4s;
+  box-shadow: 2px 3px;
 }
 .nav-item:hover {
-  filter: brightness(70%);
-}
-
-.nav-item:before {
-  position: absolute;
-  content: "";
-  width: 110%;
-  height: 115%;
-  bottom: -0.15em;
-  left: 0;
-
-  margin-left: -0.15em;
-  /*  margin-top: 0.6em; */
-
-  background-color: #ebeee6;
-  border-radius: 4px;
-  z-index: -1;
-  transform: scale(0);
-  transition: transform 0.3s ease-in-out;
-}
-
-.nav-item:hover:before,
-.nav-item:focus:before {
-  transform: scale(1);
+  box-shadow: 3px 5px;
 }
 
 a {

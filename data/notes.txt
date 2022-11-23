@@ -1,9 +1,0 @@
-db.json.
-
-    Each task has the following fields: 
-        title           - Mandatory
-        description     - Optional
-        deadline        - Optional
-        hoursSpent      - Mandatory, 0 by default.
-        completedStatus - Mandatory
-

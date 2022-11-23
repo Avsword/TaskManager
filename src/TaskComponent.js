@@ -76,7 +76,7 @@ class Todo extends React.Component {
     //I very much like map.
     let todosmap = this.state.todos.map((item, i) => (
       <div key={i + "wrapper"} className="task">
-        <h1 key={i + "h1"}>{item.title}</h1>{" "}
+        <h1 key={i + "h1"}>{item.title}</h1>
         <h2 key={i + "daysleft"}>Days left: {item.timeleft}</h2>
         <p key={i + "deadline"}>Deadline: {item.deadline}</p>
         <p key={i + "p"}>{item.description}</p>
