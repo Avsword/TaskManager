@@ -1,18 +1,10 @@
-import {
-  Link,
-  resolvePath,
-  Route,
-  Routes,
-  useParams,
-  useLocation,
-  withRouter,
-} from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Completed from "./competedTasks";
 
 const api = axios.create({
-  baseURL: "http://localhost:3500/tasks",
+  baseURL: "http://localhost:3010/tasks",
 });
 
 function Task() {
@@ -41,43 +33,35 @@ function Task() {
     </>
   );
 }
+//TODO: Sort elements by their timeleft element.
 class Todo extends React.Component {
   constructor() {
     super();
     this.state = {
       todos: [],
-      timeLeft: 0,
     };
   }
 
   componentDidMount() {
-    //TODO: Implement days left, taskLeft state in elements.
     let newDate = new Date();
-    let currdate = newDate.getDate();
-    let currmonth = newDate.getMonth() + 1;
-    let curryear = newDate.getFullYear();
-
     api.call("/").then((response) => {
       //List full of all the tasks
       let list = response.data;
       //Filter out the tasks to the tasks, which are yet to be completed
       let todolist = [];
-      //TODO: Convert deadline to time left:
+      //TODO: Push new timeleft to the actual server.
       list.forEach((element) => {
         if (!element.completed) {
           let deadlineDate = new Date(element.deadline);
 
-          //Can do the calculation here, ok ok pog.
-          //Calculate the difference of years and months in to days, since we want a "days left"-tab.
-          let years = (deadlineDate.getFullYear() - curryear) * 365;
-          let month = (deadlineDate.getMonth() + 1 - currmonth) * 30;
-          let date = deadlineDate.getDate() - currdate;
-
-          element.timeleft = years + month + date;
+          //Floor, since we want to get how many full days we have left. the big number is converting milliseconds to days, since the diff between dates gives the diff in ms
+          element.timeleft = Math.floor((deadlineDate - newDate) / 86400000);
 
           todolist.push(element);
         }
       });
+      //Sort the todolist by time left
+      todolist.sort((a, b) => a.timeleft - b.timeleft);
 
       this.setState({
         todos: todolist,
@@ -86,8 +70,10 @@ class Todo extends React.Component {
   }
 
   render() {
+    //Acts as a guard clause
     if (!this.state.todos.length) return <h1>loading posts...</h1>;
 
+    //I very much like map.
     let todosmap = this.state.todos.map((item, i) => (
       <div key={i + "wrapper"} className="task">
         <h1 key={i + "h1"}>{item.title}</h1>{" "}

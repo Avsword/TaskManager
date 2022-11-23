@@ -5,7 +5,6 @@ import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import Hours from "./HourComponent";
 import Info from "./InfoComponent";
 import Task from "./TaskComponent";
-import { useEffect, useState } from "react";
 
 function App() {
   return (
