@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { flipCompleted, deleteTask } from "./taskButtons";
 const api = axios.create({
   baseURL: "http://localhost:3010/tasks",
 });
@@ -37,7 +38,23 @@ class completed extends React.Component {
 
     let completedsmap = this.state.completed.map((item, i) => (
       <div key={i + "wrapper"} className="completed">
-        <span className="material-symbols-outlined">done</span>
+        <button
+          className="completeTask"
+          onClick={() => {
+            flipCompleted(item.id, item.completed);
+          }}
+        >
+          <span className="material-symbols-outlined">undo</span>
+        </button>
+        <button
+          className="deleteTask"
+          onClick={() => {
+            deleteTask(item.id);
+          }}
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+        <br></br>
         <h1 key={i + "h1"}>{item.title}</h1>{" "}
         <p key={i + "p"}>{item.description}</p>
         <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>

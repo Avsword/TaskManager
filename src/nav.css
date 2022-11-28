@@ -1,9 +1,28 @@
 nav {
   padding: 2px 0px;
-
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+}
+a {
+  color: #6e0000;
+  text-decoration: none;
+}
+ul {
+  padding-left: 0;
+}
+li {
+  height: 10%;
+}
+.nav-item button {
+  margin: 0;
+}
+.nav-item-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  flex-wrap: wrap;
 }
 
 .nav-item {
@@ -12,18 +31,12 @@ nav {
   border-radius: 4px;
   margin: 9px;
   padding: 2px;
-
-  transition: all 0.4s;
   box-shadow: 2px 3px;
-}
-.nav-item:hover {
-  box-shadow: 3px 5px;
+
+  transition: all 0.5s;
 }
 
-a {
-  color: #6e0000;
-  text-decoration: none;
-}
-ul {
-  padding-left: 0;
+.nav-item:hover {
+  background-color: #ebeee6;
+  filter: brightness(80%);
 }

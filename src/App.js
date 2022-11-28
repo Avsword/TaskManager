@@ -9,7 +9,7 @@ import Task from "./TaskComponent";
 function App() {
   return (
     <BrowserRouter>
-      <div>
+      <>
         <nav>
           <ul className="nav-list">
             <li className="nav-item">
@@ -43,7 +43,7 @@ function App() {
           <Route path="hours/*" element={<Hours />} />
           <Route path="info/*" element={<Info />} />
         </Routes>
-      </div>
+      </>
     </BrowserRouter>
   );
 }

@@ -1,20 +1,24 @@
 {
   "tasks": [
     {
-      "title": "Code this assignment",
-      "description": "I would really enjoy it, if this project would be successful.",
-      "deadline": "2025-12-08",
+      "title": "Finish this programming assignment",
+      "description": "Having a lot of fun with it so far!",
+      "deadline": "2022-12-20",
       "timeleft": 0,
-      "hoursSpent": 1,
-      "completed": false
+      "hoursSpent": "83",
+      "category": "chore",
+      "completed": false,
+      "id": 1
     },
     {
       "title": "Finish the Jaalto testing report",
       "description": "It's not that I dislike it, we just could've had testing homework instead of a big  essay",
       "deadline": "2022-11-30",
-      "timeleft": 6,
-      "hoursSpent": 1,
-      "completed": false
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "school",
+      "completed": false,
+      "id": 2
     },
     {
       "title": "Usability and testing report",
@@ -22,7 +26,85 @@
       "deadline": "2023-10-08",
       "timeleft": 0,
       "hoursSpent": 4,
-      "completed": true
+      "category": "school",
+      "completed": false,
+      "id": 3
+    },
+    {
+      "title": "SET THE Z INDEX",
+      "description": "Why the fuck is it so hard to set a z-index and why does it fuck everything ELSE up?? IT MAKES NO SENSE",
+      "deadline": "2022-12-08",
+      "timeleft": 0,
+      "hoursSpent": "100",
+      "category": "hobby",
+      "completed": true,
+      "id": 5
+    },
+    {
+      "title": "Task functionality",
+      "description": "Add task functionality with database categories. I am SICK FROM THE CATEGORIES",
+      "deadline": "2023-02-18",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "videogames",
+      "completed": false,
+      "id": 6
+    },
+    {
+      "title": "feed cat",
+      "description": "Cat is extremely picky...",
+      "deadline": "2023-02-15",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "cat",
+      "completed": false,
+      "id": 7
+    },
+    {
+      "title": "Add the window reload",
+      "description": "I think I added it? But after 36 hours of straight coding with 1 hour of sleep. It feels like a chore",
+      "deadline": "2022-11-28",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "chore",
+      "completed": false,
+      "id": 8
+    },
+    {
+      "title": "Play with my friend",
+      "description": "I havent played in a long time.",
+      "deadline": "2022-12-02",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "videogames",
+      "completed": false,
+      "id": 9
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "categoryname": "school"
+    },
+    {
+      "id": 2,
+      "categoryname": "chore"
+    },
+    {
+      "id": 3,
+      "categoryname": "hobby"
+    },
+    {
+      "categoryname": "videogames",
+      "id": 4
+    },
+    {
+      "categoryname": "cat",
+      "id": 5
+    },
+    {
+      "categoryname": "deleteThis",
+      "id": 6
     }
   ]
 }

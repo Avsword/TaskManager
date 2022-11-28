@@ -1,0 +1,66 @@
+.categories {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.categoryform {
+  margin-top: 10px;
+}
+.categories-select {
+  max-width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.categories-select button {
+  flex: 1;
+
+  border-radius: 8px;
+  border: 2px solid #6e0000;
+  background-color: #ebeee6;
+  filter: brightness(98%);
+  margin: 10px;
+
+  cursor: pointer;
+}
+.newTaskSubmit label {
+  margin-right: 10px;
+}
+.newCategory {
+  display: block;
+}
+
+.catPopup {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 1em;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+.categoryform {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.categoryform label {
+  margin-right: 8px;
+}
+
+.categoryform button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 1em;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+
+  position: relative;
+  top: 0.5em;
+  right: 2.5em;
+}

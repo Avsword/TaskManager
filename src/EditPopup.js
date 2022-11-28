@@ -1,39 +1,42 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import "./EditPopup.css";
 import "./newTask.css";
 import axios from "axios";
 const api = axios.create({
   baseURL: "http://localhost:3010/tasks",
 });
 
-const NewTask = () => {
+//TODO: Should be able to just... use the newtask component with little to no editing to get this to work. Otherwise this works like a dream rn
+
+function EditPopup(props) {
+  const id = props.id;
   //Add responsivity for adding a new task with some feedback on the status. (If the server is really slow, we could need this)
   const [pendingrequest, setPendingrequest] = useState(false);
-  const [fetched, setFetched] = useState(false);
-  const [categories, setCategories] = useState("All");
 
   //States for each input field for submitting to the db
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   //Could use current date as default deadline, but I don't currently see the need for that.
   const [deadline, setDeadline] = useState("");
-  const [category, setCategory] = useState("school");
+  const [hoursSpent, sethoursSpent] = useState("");
+  const [category, setCategory] = useState("School");
 
   //Default values for different variables within each task. Id will be automatically updated by axios I think
   //timeleft will be handled later?
   const timeleft = 0;
-  //Of course you haven't spent any hours when you just created the object
-  const hoursSpent = 0;
   const completed = false;
 
-  //Get and set the categories :)
-  if (!fetched) {
-    api.get("http://localhost:3010/categories").then((response) => {
-      setCategories(response.data);
-      console.log("resp ", response.data);
-      console.log("categories: ", categories);
-      setFetched(true);
+  useEffect(() => {
+    //Get the right object with the id, so we can use the values as defaults
+    api.get(`/${id}`).then((response) => {
+      setTitle(response.data.title);
+      setDescription(response.data.description);
+      setDeadline(response.data.deadline);
+      setCategory(response.data.category);
+      sethoursSpent(response.data.hoursSpent);
     });
-  }
+  }, [id]);
+
   //Responsive, add some kind of feedback
   const handleTaskSubmit = (eventObject) => {
     //Do not refresh the site
@@ -53,24 +56,26 @@ const NewTask = () => {
 
     //axios really helps with posting etc.
     api
-      .post("/", newTask)
+      .put(`/${id}`, newTask)
       .then(function (response) {
         setPendingrequest(false);
-        console.log("Successfully added the task");
-        alert("New task has been added!");
+
         window.location.reload(false);
       })
       .catch(function (error) {
         console.log(error);
       });
+    props.popuphandler();
   };
-  return fetched ? (
-    <>
-      <h2 className="newTaskHeader">Add a new task</h2>
-      <div className="newTaskWrapper">
+  return props.popup ? (
+    <div className="EditPopup">
+      <div className="EditPopup-inner">
+        <button className="exitPopup" onClick={props.popuphandler}>
+          <span className="material-symbols-outlined">close</span>
+        </button>
         <form onSubmit={handleTaskSubmit}>
           <div className="newTaskInput">
-            <label>Title:</label>
+            <label>Title: </label>
             <input
               type={"text"}
               required
@@ -113,25 +118,34 @@ const NewTask = () => {
                 setCategory(eventObject.target.value);
               }}
             >
-              {categories.map((category) => (
-                <option key={category.id} value={category.categoryname}>
-                  {category.categoryname}
-                </option>
-              ))}
+              <option value="school">School</option>
+              <option value="chore">Chore</option>
+              <option value="hobby">Hobby</option>
             </select>
           </div>
+          <div className="newTaskInput">
+            <label>Hours Spent on Task: </label>
+            <input
+              type={"number"}
+              required
+              value={hoursSpent}
+              onChange={(eventObject) => {
+                sethoursSpent(eventObject.target.value);
+              }}
+            ></input>
+          </div>
           <span className="newTaskSubmit">
-            {!pendingrequest && <button>Add task</button>}
+            {!pendingrequest && <button>Update task</button>}
             {pendingrequest && (
               <span className="material-symbols-outlined">refresh</span>
             )}
           </span>
         </form>
       </div>
-    </>
+    </div>
   ) : (
     <></>
   );
-};
+}
 
-export default NewTask;
+export default EditPopup;

@@ -1,0 +1,65 @@
+.newTaskWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /*  position: relative;
+  z-index: 0; */
+}
+.newTaskHeader {
+  text-align: center;
+}
+
+h2 {
+}
+
+input,
+textarea,
+select {
+  border-radius: 8px;
+  border: 2px solid #6e0000;
+  background-color: #ebeee6;
+  filter: brightness(98%);
+}
+.newTaskInput {
+  max-width: 60vw;
+  margin: 1em;
+}
+.newTaskInput textarea,
+.newTaskInput input,
+.newTaskInput select {
+  width: 100%;
+}
+.newTaskSubmit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.newTaskSubmit button {
+  background-color: #ebeee6;
+  border: 2px solid black;
+  border-radius: 8px;
+  margin: 9px;
+  padding: 2px;
+
+  transition: all 0.4s;
+  box-shadow: 2px 3px;
+
+  cursor: pointer;
+}
+.newTaskSubmit button:hover {
+  box-shadow: 4px 6px;
+}
+
+.newTaskSubmit span {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
