@@ -66,6 +66,8 @@ const Categories = (props) => {
   };
   const deleteCategory = async (e) => {
     let id = 1;
+    //assume that the value is false, but validate it below
+    let isInDb = false;
     //Prevent instant page load
     e.preventDefault();
     //First we need to get the id of the category
@@ -74,23 +76,28 @@ const Categories = (props) => {
         console.log(element.categoryname === catToBeDeleted);
         if (element.categoryname === catToBeDeleted) {
           id = element.id;
-          return;
-        } else {
-          alert("Category not found");
-          return;
+          isInDb = true;
+          //You can't exit a foreach loop according to google, so it will still go through the response, but.. that's fine, sure, I don't want to use lodash or anything.
         }
       });
     });
 
-    //Make sure if the user really wants to delete the task
-    let areyousure = window.confirm(
-      "Are you sure you want to delete this category FOREVER?"
-    );
-    if (areyousure) {
-      await axios
-        //I don't know why, but the base URL didn't want to work for the delete...
-        .delete(`http://localhost:3010/categories/${id}`)
-        .then((response) => window.location.reload(false));
+    if (isInDb) {
+      //Make sure if the user really wants to delete the task
+      let areyousure = window.confirm(
+        "Are you sure you want to delete this category FOREVER?"
+      );
+      if (areyousure && isInDb) {
+        await axios
+          //I don't know why, but the base URL didn't want to work for the delete...
+          .delete(`http://localhost:3010/categories/${id}`)
+          .then((response) => window.location.reload(false));
+      }
+    } else {
+      //If it's not in the database, send out an alert
+      alert(
+        `Could not find ${catToBeDeleted} in database. Check for spelling errors`
+      );
     }
   };
 
@@ -130,7 +137,7 @@ const Categories = (props) => {
           }}
         ></input>
         <button type="submit">
-          {/* <span class="material-symbols-outlined">add</span> */}
+          {<span class="material-symbols-outlined">add</span>}
         </button>
       </form>
 
@@ -145,7 +152,7 @@ const Categories = (props) => {
           }}
         ></input>
         <button type="submit">
-          {/* <span class="material-symbols-outlined">close</span> */}
+          {<span class="material-symbols-outlined">close</span>}
         </button>
       </form>
     </>
