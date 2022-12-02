@@ -16,7 +16,7 @@ const NewTask = () => {
   const [description, setDescription] = useState("");
   //Could use current date as default deadline, but I don't currently see the need for that.
   const [deadline, setDeadline] = useState("");
-  const [category, setCategory] = useState("school");
+  const [category, setCategory] = useState("general");
 
   //Default values for different variables within each task. Id will be automatically updated by axios I think
   //timeleft will be handled later?

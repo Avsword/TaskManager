@@ -65,17 +65,22 @@ const Categories = (props) => {
     }
   };
   const deleteCategory = async (e) => {
+    let tasksThatHaveCategory = [];
     let id = 1;
     //assume that the value is false, but validate it below
     let isInDb = false;
     //Prevent instant page load
     e.preventDefault();
-    //First we need to get the id of the category
+    //First we need to get the id of the category.
+    //Check all tasks to see if the category exists => allows for putting tasks in a list
+    //For setting the new category to general
     await api.get("/").then((response) => {
       response.data.forEach((element) => {
         console.log(element.categoryname === catToBeDeleted);
         if (element.categoryname === catToBeDeleted) {
           id = element.id;
+          //TODO: Read comments above, must add element id to array tasksThatHaveCategory
+          //TODO:     and then set the category to "general" in the next TODO
           isInDb = true;
           //You can't exit a foreach loop according to google, so it will still go through the response, but.. that's fine, sure, I don't want to use lodash or anything.
         }
@@ -88,6 +93,7 @@ const Categories = (props) => {
         "Are you sure you want to delete this category FOREVER?"
       );
       if (areyousure && isInDb) {
+        //TODO: Set any tasks with the category to be deleted to have the category "normal"
         await axios
           //I don't know why, but the base URL didn't want to work for the delete...
           .delete(`http://localhost:3010/categories/${id}`)
