@@ -84,7 +84,7 @@
   "categories": [
     {
       "id": 1,
-      "categoryname": "school"
+      "categoryname": "general"
     },
     {
       "id": 2,
@@ -101,6 +101,10 @@
     {
       "categoryname": "cat",
       "id": 5
+    },
+    {
+      "categoryname": "school",
+      "id": 6
     }
   ]
 }

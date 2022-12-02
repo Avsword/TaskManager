@@ -19,7 +19,11 @@ function EditPopup(props) {
   //Could use current date as default deadline, but I don't currently see the need for that.
   const [deadline, setDeadline] = useState("");
   const [hoursSpent, sethoursSpent] = useState("");
-  const [category, setCategory] = useState("School");
+  const [category, setCategory] = useState("general");
+
+  const [allcategories, setallcategories] = useState("");
+
+  //We need a new state for fetching all of the categories for the dropdown.
 
   //Default values for different variables within each task. Id will be automatically updated by axios I think
   //timeleft will be handled later?
@@ -34,6 +38,10 @@ function EditPopup(props) {
       setDeadline(response.data.deadline);
       setCategory(response.data.category);
       sethoursSpent(response.data.hoursSpent);
+    });
+    //Then set ALL of the available categories in order for the dropdown to work
+    api.get("http://localhost:3010/categories").then((response) => {
+      setallcategories(response.data);
     });
   }, [id]);
 
@@ -118,9 +126,11 @@ function EditPopup(props) {
                 setCategory(eventObject.target.value);
               }}
             >
-              <option value="school">School</option>
-              <option value="chore">Chore</option>
-              <option value="hobby">Hobby</option>
+              {allcategories.map((category) => (
+                <option key={category.id} value={category.categoryname}>
+                  {category.categoryname}
+                </option>
+              ))}
             </select>
           </div>
           <div className="newTaskInput">

@@ -12,7 +12,7 @@ const Categories = (props) => {
   const handler = props.handler;
   /* console.log("Categories prop currcat: ", props.currCat); */
 
-  const [newCategory, setNewCategory] = useState("all");
+  const [newCategory, setNewCategory] = useState("");
   const [catToBeDeleted, setcatToBeDeleted] = useState("");
   const [fetched, setFetched] = useState(false);
   const [categoriesMap, setcategoriesMap] = useState(<></>);
