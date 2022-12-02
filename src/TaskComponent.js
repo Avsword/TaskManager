@@ -7,6 +7,7 @@ import "./category.css";
 import { flipCompleted, deleteTask } from "./taskButtons";
 import EditPopup from "./EditPopup";
 import Categories from "./Categories";
+import pic from "./gIconSprite1090PikachuRockStar.png";
 
 const api = axios.create({
   baseURL: "http://localhost:3010/tasks",
@@ -95,9 +96,9 @@ class Todo extends React.Component {
           //Floor, since we want to get how many full days we have left. the big number is converting milliseconds to days, since the diff between dates gives the diff in ms
           element.timeleft = Math.floor((deadlineDate - newDate) / 86400000);
 
-          console.log(
+          /* console.log(
             `Element curr cat is: ${element.category} and the state cat is ${this.state.currentCategory}`
-          );
+          ); */
           if (
             element.category === this.state.currentCategory ||
             this.state.currentCategory === "all"
@@ -134,10 +135,16 @@ class Todo extends React.Component {
     //Acts as a guard clause
     if (!this.state.todos.length) return <h1>loading posts...</h1>;
     let stateTodos = this.state.todos;
-    console.log(stateTodos);
-    //I very much like map.
+    /* console.log(stateTodos); */
+    //Tasks to "component" Inline styling to warn the user about past-due tasks
     let todosmap = stateTodos.map((item, i) => (
-      <div key={i + "wrapper"} className="task">
+      <div
+        key={i + "wrapper"}
+        className="task"
+        style={{
+          border: item.timeleft < 0 ? "2px solid red" : "none",
+        }}
+      >
         <button
           className="completeTask"
           onClick={() => {

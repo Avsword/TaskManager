@@ -32,7 +32,7 @@
 .task:hover,
 .completed:hover {
   transition: all 0.5s;
-  filter: brightness(70%);
+  filter: brightness(105%);
 }
 
 /* Below the css for the completed tasks */

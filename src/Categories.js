@@ -72,21 +72,23 @@ const Categories = (props) => {
     //Prevent instant page load
     e.preventDefault();
     //First we need to get the id of the category.
-    //Check all tasks to see if the category exists => allows for putting tasks in a list
-    //For setting the new category to general
+
     await api.get("/").then((response) => {
+      console.log("resp data", response.data);
       response.data.forEach((element) => {
         console.log(element.categoryname === catToBeDeleted);
         if (element.categoryname === catToBeDeleted) {
           id = element.id;
           //TODO: Read comments above, must add element id to array tasksThatHaveCategory
           //TODO:     and then set the category to "general" in the next TODO
+
           isInDb = true;
           //You can't exit a foreach loop according to google, so it will still go through the response, but.. that's fine, sure, I don't want to use lodash or anything.
         }
       });
     });
 
+    /*  console.log(tasksThatHaveCategory); */
     if (isInDb) {
       //Make sure if the user really wants to delete the task
       let areyousure = window.confirm(
@@ -97,7 +99,37 @@ const Categories = (props) => {
         await axios
           //I don't know why, but the base URL didn't want to work for the delete...
           .delete(`http://localhost:3010/categories/${id}`)
-          .then((response) => window.location.reload(false));
+          .then(async () => {
+            //get all tasks
+            await axios
+              .get("http://localhost:3010/tasks")
+              .then((response) => {
+                //Push all tasks that have the category to an array for.. mapping?
+                response.data.forEach((task) => {
+                  if (task.category === catToBeDeleted) {
+                    tasksThatHaveCategory.push(task);
+                  }
+                });
+              })
+              //After tasks have been set to the array
+              .then(async () => {
+                await tasksThatHaveCategory.forEach((task) => {
+                  //Put the new info to to their corresponding place
+                  const newTask = {
+                    title: task.title,
+                    description: task.description,
+                    deadline: task.deadline,
+                    timeleft: task.timeleft,
+                    hoursSpent: task.hoursSpent,
+                    category: "general",
+                    completed: task.completed,
+                  };
+                  console.log(newTask);
+                  axios.put(`http://localhost:3010/tasks/${task.id}`, newTask);
+                });
+              })
+              .then(() => window.location.reload(false));
+          });
       }
     } else {
       //If it's not in the database, send out an alert

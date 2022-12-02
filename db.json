@@ -16,7 +16,7 @@
       "deadline": "2022-11-30",
       "timeleft": 0,
       "hoursSpent": 0,
-      "category": "school",
+      "category": "general",
       "completed": false,
       "id": 2
     },
@@ -26,7 +26,7 @@
       "deadline": "2023-10-08",
       "timeleft": 0,
       "hoursSpent": 4,
-      "category": "school",
+      "category": "general",
       "completed": false,
       "id": 3
     },
@@ -56,7 +56,7 @@
       "deadline": "2023-02-15",
       "timeleft": 0,
       "hoursSpent": 0,
-      "category": "cat",
+      "category": "general",
       "completed": false,
       "id": 7
     },
@@ -66,7 +66,7 @@
       "deadline": "2022-11-28",
       "timeleft": 0,
       "hoursSpent": 0,
-      "category": "chore",
+      "category": "general",
       "completed": false,
       "id": 8
     },
@@ -79,6 +79,26 @@
       "category": "videogames",
       "completed": false,
       "id": 9
+    },
+    {
+      "title": "Get a shiny rockstar Pikachu",
+      "description": "Actually no way of getting it, but I'm just using this as an example for this screenshot for you, Ash",
+      "deadline": "2022-12-11",
+      "timeleft": 0,
+      "hoursSpent": "25",
+      "category": "school",
+      "completed": false,
+      "id": 10
+    },
+    {
+      "title": "cataetw",
+      "description": "wtatwt",
+      "deadline": "2022-12-22",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "general",
+      "completed": false,
+      "id": 11
     }
   ],
   "categories": [
@@ -100,11 +120,11 @@
     },
     {
       "categoryname": "cat",
-      "id": 5
+      "id": 7
     },
     {
       "categoryname": "school",
-      "id": 6
+      "id": 8
     }
   ]
 }
