@@ -10,7 +10,9 @@ const api = axios.create({
 
 const Categories = (props) => {
   const handler = props.handler;
-  /* console.log("Categories prop currcat: ", props.currCat); */
+
+  //We use the props.currentCat for styling purposes.
+  console.log("Categories prop currcat: ", props.currentCat);
 
   const [newCategory, setNewCategory] = useState("");
   const [catToBeDeleted, setcatToBeDeleted] = useState("");
@@ -43,6 +45,7 @@ const Categories = (props) => {
           isInDb = true;
 
           alert(`The value you submit was already in database.`);
+          //Pretty sure this return is useless, since we're in a foreach loop, but I'm tired rn so I'll let it be
           return;
         }
       });
@@ -71,6 +74,13 @@ const Categories = (props) => {
     let isInDb = false;
     //Prevent instant page load
     e.preventDefault();
+
+    //Check that we aren't removing all or general categories, as these are essential categories
+    if (catToBeDeleted === "all" || catToBeDeleted === "general") {
+      alert("You cannot delete categories 'all' or 'general'.");
+      return;
+    }
+
     //First we need to get the id of the category.
 
     await api.get("/").then((response) => {
@@ -79,9 +89,6 @@ const Categories = (props) => {
         console.log(element.categoryname === catToBeDeleted);
         if (element.categoryname === catToBeDeleted) {
           id = element.id;
-          //TODO: Read comments above, must add element id to array tasksThatHaveCategory
-          //TODO:     and then set the category to "general" in the next TODO
-
           isInDb = true;
           //You can't exit a foreach loop according to google, so it will still go through the response, but.. that's fine, sure, I don't want to use lodash or anything.
         }
@@ -143,19 +150,18 @@ const Categories = (props) => {
     <>
       <div className="categories">
         <div className="categories-select">
-          <button
-            onClick={() => {
-              handler("all");
-            }}
-          >
-            All
-          </button>
           {categoriesMap.map((category, i) => (
             <button
               key={i + "button"}
               onClick={() => {
                 console.log("the button WAS pressed");
                 props.handler(category.categoryname);
+              }}
+              style={{
+                backgroundColor:
+                  props.currentCat === category.categoryname
+                    ? "rgba(0, 0, 0, 0.4)"
+                    : "",
               }}
             >
               {category.categoryname}
@@ -175,7 +181,7 @@ const Categories = (props) => {
           }}
         ></input>
         <button type="submit">
-          {<span class="material-symbols-outlined">add</span>}
+          {<span className="material-symbols-outlined">add</span>}
         </button>
       </form>
 
@@ -190,7 +196,7 @@ const Categories = (props) => {
           }}
         ></input>
         <button type="submit">
-          {<span class="material-symbols-outlined">close</span>}
+          {<span className="material-symbols-outlined">close</span>}
         </button>
       </form>
     </>

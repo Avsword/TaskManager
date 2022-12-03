@@ -6,15 +6,27 @@ const api = axios.create({
 });
 
 class completed extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       completed: [],
       timeLeft: 0,
+      currentCategory: props.currentCat,
     };
   }
 
   componentDidMount() {
+    this.getComponents();
+  }
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.currentCat !== prevProps.currentCat) {
+      /* console.log("prop was updated to", this.props.currentCat); */
+      this.setState({ currentCategory: this.props.currentCat });
+      this.getComponents();
+    }
+  }
+  getComponents = () => {
     api.call("/").then((response) => {
       //List full of all the tasks
       let list = response.data;
@@ -22,8 +34,16 @@ class completed extends React.Component {
       let completedlist = [];
       //completed: Convert deadline to time left:
       list.forEach((element) => {
+        //Check if task has been completed
         if (element.completed) {
-          completedlist.push(element);
+          //Check if we are sorting by any category and then push the correct task to the array
+          if (
+            element.category === this.state.currentCategory ||
+            this.state.currentCategory === "all"
+          ) {
+            completedlist.push(element);
+          }
+          /* completedlist.push(element); */
         }
       });
 
@@ -31,8 +51,7 @@ class completed extends React.Component {
         completed: completedlist,
       });
     });
-  }
-
+  };
   render() {
     if (!this.state.completed.length) return <h1>loading posts...</h1>;
 

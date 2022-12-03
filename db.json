@@ -104,27 +104,31 @@
   "categories": [
     {
       "id": 1,
-      "categoryname": "general"
+      "categoryname": "all"
     },
     {
       "id": 2,
-      "categoryname": "chore"
+      "categoryname": "General"
     },
     {
       "id": 3,
+      "categoryname": "chore"
+    },
+    {
+      "id": 4,
       "categoryname": "hobby"
     },
     {
       "categoryname": "videogames",
-      "id": 4
+      "id": 5
     },
     {
       "categoryname": "cat",
-      "id": 7
+      "id": 6
     },
     {
       "categoryname": "school",
-      "id": 8
+      "id": 7
     }
   ]
 }

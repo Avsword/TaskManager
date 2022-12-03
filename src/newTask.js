@@ -28,9 +28,10 @@ const NewTask = () => {
   //Get and set the categories :)
   if (!fetched) {
     api.get("http://localhost:3010/categories").then((response) => {
+      response.data.shift();
       setCategories(response.data);
-      console.log("resp ", response.data);
-      console.log("categories: ", categories);
+      /* console.log("resp ", response.data);
+      console.log("categories: ", categories); */
       setFetched(true);
     });
   }

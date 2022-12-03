@@ -7,7 +7,6 @@ import "./category.css";
 import { flipCompleted, deleteTask } from "./taskButtons";
 import EditPopup from "./EditPopup";
 import Categories from "./Categories";
-import pic from "./gIconSprite1090PikachuRockStar.png";
 
 const api = axios.create({
   baseURL: "http://localhost:3010/tasks",
@@ -52,13 +51,14 @@ function Task() {
           <Categories
             popup={catPopup}
             handler={handleCategoryChange}
+            currentCat={currCat}
           ></Categories>
         </ul>
       </nav>
       <Routes>
         <Route path="*" element={<Todo currentCat={currCat} />} />
 
-        <Route path="/completed" element={<Completed />} />
+        <Route path="/completed" element={<Completed currentCat={currCat} />} />
 
         <Route path="/newtask" element={<NewTask />} />
       </Routes>
@@ -66,7 +66,6 @@ function Task() {
   );
 }
 
-//TODO: Sorting by category
 class Todo extends React.Component {
   constructor(props) {
     super();
@@ -134,6 +133,7 @@ class Todo extends React.Component {
   render() {
     //Acts as a guard clause
     if (!this.state.todos.length) return <h1>loading posts...</h1>;
+
     let stateTodos = this.state.todos;
     /* console.log(stateTodos); */
     //Tasks to "component" Inline styling to warn the user about past-due tasks

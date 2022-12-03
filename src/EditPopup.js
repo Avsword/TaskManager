@@ -41,6 +41,9 @@ function EditPopup(props) {
     });
     //Then set ALL of the available categories in order for the dropdown to work
     api.get("http://localhost:3010/categories").then((response) => {
+      //Remove "all"-category
+      response.data.shift();
+
       setallcategories(response.data);
     });
   }, [id]);
