@@ -132,7 +132,7 @@ class Todo extends React.Component {
   }
 
   // if upDownBool is true, make the item go one up in the array.
-  customSorting(upDownBool, mapindex) {
+  customSorting(upDownBool, mapindex, topBottomBool) {
     console.log(this.state.todos.length);
     console.log("i", mapindex);
 
@@ -146,15 +146,31 @@ class Todo extends React.Component {
       console.log("todos: ", this.state.todos);
       //Initalize the new order here just so it's easier for me to understand what I'm coding.
       let newOrder = this.state.todos;
+      // calc the desired index depending on do we skip straight to top or bottom
+      let indexOffset = topBottomBool
+        ? upDownBool
+          ? //If we want to skip to top or bottom (topbottombool is true), check if we want to go to the top or bottom with the updown bool.
+            //if true, set it to index of 0
+            0
+          : //if updown is false, set the current index to the last array.. item.
+            this.state.todos.length - 1
+        : //If we don't want to skip to the top or bottom, then
+        upDownBool
+        ? //Check if we want to set the current item "up" -> up arrow
+          mapindex - 1
+        : // If not, go down.
+          mapindex + 1;
       //Destructuring assignment. Couldn't get a trenary operator to work for this
       if (upDownBool) {
-        [newOrder[mapindex], newOrder[mapindex - 1]] = [
-          newOrder[mapindex - 1],
+        //Move current task up one index
+        [newOrder[mapindex], newOrder[indexOffset]] = [
+          newOrder[indexOffset],
           newOrder[mapindex],
         ];
       } else {
-        [newOrder[mapindex], newOrder[mapindex + 1]] = [
-          newOrder[mapindex + 1],
+        //Move current task down one index
+        [newOrder[mapindex], newOrder[indexOffset]] = [
+          newOrder[indexOffset],
           newOrder[mapindex],
         ];
       }
@@ -221,17 +237,35 @@ class Todo extends React.Component {
         <div className="updownArrows">
           <button
             onClick={() => {
-              this.customSorting(true, i);
+              this.customSorting(true, i, true);
+            }}
+          >
+            <span class="material-symbols-outlined">
+              keyboard_double_arrow_up
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              this.customSorting(true, i, false);
             }}
           >
             <span class="material-symbols-outlined">arrow_upward</span>
           </button>
           <button
             onClick={() => {
-              this.customSorting(false, i);
+              this.customSorting(false, i, false);
             }}
           >
             <span class="material-symbols-outlined">arrow_downward</span>
+          </button>
+          <button
+            onClick={() => {
+              this.customSorting(false, i, true);
+            }}
+          >
+            <span class="material-symbols-outlined">
+              keyboard_double_arrow_down
+            </span>
           </button>
         </div>
       </div>
