@@ -86,7 +86,7 @@
       "deadline": "2022-12-11",
       "timeleft": 0,
       "hoursSpent": "25",
-      "category": "school",
+      "category": "general",
       "completed": false,
       "id": 10
     },
@@ -108,7 +108,7 @@
     },
     {
       "id": 2,
-      "categoryname": "General"
+      "categoryname": "general"
     },
     {
       "id": 3,
@@ -125,10 +125,6 @@
     {
       "categoryname": "cat",
       "id": 6
-    },
-    {
-      "categoryname": "school",
-      "id": 7
     }
   ]
 }

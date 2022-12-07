@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 /* 
 import "./category.css"; */
 import "./categories.css";
@@ -9,10 +9,8 @@ const api = axios.create({
 });
 
 const Categories = (props) => {
-  const handler = props.handler;
-
-  //We use the props.currentCat for styling purposes.
-  console.log("Categories prop currcat: ", props.currentCat);
+  //We use the props.currentCat for styling purposes. works.
+  /* console.log("Categories prop currcat: ", props.currentCat); */
 
   const [newCategory, setNewCategory] = useState("");
   const [catToBeDeleted, setcatToBeDeleted] = useState("");
