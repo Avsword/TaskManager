@@ -3,7 +3,7 @@
     {
       "title": "Finish this programming assignment",
       "description": "Having a lot of fun with it so far!",
-      "deadline": "2022-12-20",
+      "deadline": "2022-09-14",
       "timeleft": 0,
       "hoursSpent": "83",
       "category": "chore",
@@ -17,7 +17,7 @@
       "timeleft": 0,
       "hoursSpent": 0,
       "category": "general",
-      "completed": false,
+      "completed": true,
       "id": 2
     },
     {
@@ -67,18 +67,8 @@
       "timeleft": 0,
       "hoursSpent": 0,
       "category": "general",
-      "completed": false,
+      "completed": true,
       "id": 8
-    },
-    {
-      "title": "Play with my friend",
-      "description": "I havent played in a long time.",
-      "deadline": "2022-12-02",
-      "timeleft": 0,
-      "hoursSpent": 0,
-      "category": "videogames",
-      "completed": false,
-      "id": 9
     },
     {
       "title": "Get a shiny rockstar Pikachu",
@@ -89,16 +79,6 @@
       "category": "general",
       "completed": false,
       "id": 10
-    },
-    {
-      "title": "cataetw",
-      "description": "wtatwt",
-      "deadline": "2022-12-22",
-      "timeleft": 0,
-      "hoursSpent": 0,
-      "category": "general",
-      "completed": false,
-      "id": 11
     }
   ],
   "categories": [
@@ -125,6 +105,22 @@
     {
       "categoryname": "cat",
       "id": 6
+    }
+  ],
+  "timers": [
+    {
+      "id": 1,
+      "taskid": 1,
+      "active": true,
+      "timeInMilliseconds": 20000000,
+      "startedDate": 0
+    },
+    {
+      "id": 1,
+      "taskid": 2,
+      "active": false,
+      "timeInMilliseconds": 0,
+      "startedDate": 0
     }
   ]
 }

@@ -35,10 +35,14 @@
   filter: brightness(105%);
 }
 
-/* Below the css for the completed tasks */
+.deleteTask {
+  float: right;
+}
 
 .deleteTask,
-.completeTask {
+.completeTask,
+.editTask,
+.updownContent > button {
   background: none;
   color: inherit;
   border: none;
@@ -50,37 +54,31 @@
 
   transition: all 0.2s;
 }
-.completeTask {
-  float: left;
-}
-.deleteTask {
-  float: right;
-}
 
 .deleteTask:active,
 .completeTask:active,
-.editTask:active {
+.editTask:active,
+.updownContent > button:active {
   transform: scale(0.5);
 }
 .deleteTask:hover,
 .completeTask:hover,
-.editTask:hover {
+.editTask:hover,
+.updownContent > button:hover {
   transform: scale(1.3);
 }
 
-.editTask {
-  position: fixed;
-  bottom: 0;
-  right: 0;
+.updownDropdown {
+  position: relative;
+  display: inline-block;
+}
+.updownContent {
+  display: none;
+  opacity: 0%;
+  transition: all 1s ease-in-out;
+}
 
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  margin: 1em;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-
-  transition: all 0.2s;
+.updownDropdown:hover .updownContent {
+  display: inline-block;
+  opacity: 100%;
 }

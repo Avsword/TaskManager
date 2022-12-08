@@ -136,17 +136,7 @@ function EditPopup(props) {
               ))}
             </select>
           </div>
-          <div className="newTaskInput">
-            <label>Hours Spent on Task: </label>
-            <input
-              type={"number"}
-              required
-              value={hoursSpent}
-              onChange={(eventObject) => {
-                sethoursSpent(eventObject.target.value);
-              }}
-            ></input>
-          </div>
+
           <span className="newTaskSubmit">
             {!pendingrequest && <button>Update task</button>}
             {pendingrequest && (

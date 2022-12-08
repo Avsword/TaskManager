@@ -97,9 +97,6 @@ class Todo extends React.Component {
           //Floor, since we want to get how many full days we have left. the big number is converting milliseconds to days, since the diff between dates gives the diff in ms
           element.timeleft = Math.floor((deadlineDate - newDate) / 86400000);
 
-          /* console.log(
-            `Element curr cat is: ${element.category} and the state cat is ${this.state.currentCategory}`
-          ); */
           if (
             element.category === this.state.currentCategory ||
             this.state.currentCategory === "all"
@@ -110,8 +107,6 @@ class Todo extends React.Component {
       });
       //Sort the todolist by time left
       todolist.sort((a, b) => a.timeleft - b.timeleft);
-
-      //TODO: Custom sorting
 
       this.setState({
         todos: todolist,
@@ -131,10 +126,9 @@ class Todo extends React.Component {
     }
   }
 
-  // if upDownBool is true, make the item go one up in the array.
+  // BOOLEANS: True = up, False = down.
   customSorting(upDownBool, mapindex, topBottomBool) {
-    console.log(this.state.todos.length);
-    console.log("i", mapindex);
+    // I'm ridiculously proud of this even if it's just basic arrays
 
     //Check for edge cases (can't move up if it's already the first item in the array)
     if (
@@ -146,33 +140,32 @@ class Todo extends React.Component {
       console.log("todos: ", this.state.todos);
       //Initalize the new order here just so it's easier for me to understand what I'm coding.
       let newOrder = this.state.todos;
-      // calc the desired index depending on do we skip straight to top or bottom
-      let indexOffset = topBottomBool
-        ? upDownBool
-          ? //If we want to skip to top or bottom (topbottombool is true), check if we want to go to the top or bottom with the updown bool.
-            //if true, set it to index of 0
-            0
-          : //if updown is false, set the current index to the last array.. item.
-            this.state.todos.length - 1
-        : //If we don't want to skip to the top or bottom, then
-        upDownBool
-        ? //Check if we want to set the current item "up" -> up arrow
-          mapindex - 1
-        : // If not, go down.
-          mapindex + 1;
+
+      let len = this.state.todos.length - 1;
+
+      //With the previous implementation we just switched 2 items. We actually want to... loop the change between neighbouring item
+      //=> the last and first items don't get switched, but only the item we want to change position changes position.
+
+      //WHY AM I SO GOOD AT CODING???
+      let loops = topBottomBool ? (upDownBool ? mapindex : len - mapindex) : 1;
       //Destructuring assignment. Couldn't get a trenary operator to work for this
+      //Loops are for setting a task straight to the top or bottom.
       if (upDownBool) {
-        //Move current task up one index
-        [newOrder[mapindex], newOrder[indexOffset]] = [
-          newOrder[indexOffset],
-          newOrder[mapindex],
-        ];
+        for (let index = 0; index < loops; index++) {
+          //Move current task up
+          [newOrder[mapindex - index], newOrder[mapindex - 1 - index]] = [
+            newOrder[mapindex - 1 - index],
+            newOrder[mapindex - index],
+          ];
+        }
       } else {
-        //Move current task down one index
-        [newOrder[mapindex], newOrder[indexOffset]] = [
-          newOrder[indexOffset],
-          newOrder[mapindex],
-        ];
+        for (let index = 0; index < loops; index++) {
+          //Move current task down
+          [newOrder[mapindex + index], newOrder[mapindex + 1 + index]] = [
+            newOrder[mapindex + 1 + index],
+            newOrder[mapindex + index],
+          ];
+        }
       }
 
       this.setState({
@@ -184,12 +177,11 @@ class Todo extends React.Component {
   popuphandler() {
     this.setState({ popup: !this.state.popup });
   }
+
   render() {
     //Acts as a guard clause
     if (!this.state.todos.length) return <h1>loading posts...</h1>;
 
-    /* console.log(stateTodos); */
-    //Tasks to "component" Inline styling to warn the user about past-due tasks
     let todosmap = this.state.todos.map((item, i) => (
       <div
         key={i + "wrapper"}
@@ -207,24 +199,6 @@ class Todo extends React.Component {
           <span className="material-symbols-outlined">done</span>
         </button>
         <button
-          className="deleteTask"
-          onClick={() => {
-            deleteTask(item.id);
-          }}
-        >
-          <span className="material-symbols-outlined">close</span>
-        </button>
-        <br></br>
-        <Timer></Timer>
-        <h1 key={i + "h1"} className="taskHeader">
-          {item.title}
-        </h1>
-        <h2 key={i + "daysleft"}>Days left: {item.timeleft}</h2>
-        <p key={i + "deadline"}>Deadline: {item.deadline}</p>
-        <p key={i + "p"}>{item.description}</p>
-        <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>
-
-        <button
           key={i + "button"}
           className="editTask"
           onClick={() => {
@@ -234,39 +208,61 @@ class Todo extends React.Component {
         >
           <span className="material-symbols-outlined">edit</span>
         </button>
-        <div className="updownArrows">
-          <button
-            onClick={() => {
-              this.customSorting(true, i, true);
-            }}
-          >
-            <span class="material-symbols-outlined">
-              keyboard_double_arrow_up
-            </span>
-          </button>
-          <button
-            onClick={() => {
-              this.customSorting(true, i, false);
-            }}
-          >
-            <span class="material-symbols-outlined">arrow_upward</span>
-          </button>
-          <button
-            onClick={() => {
-              this.customSorting(false, i, false);
-            }}
-          >
-            <span class="material-symbols-outlined">arrow_downward</span>
-          </button>
-          <button
-            onClick={() => {
-              this.customSorting(false, i, true);
-            }}
-          >
-            <span class="material-symbols-outlined">
-              keyboard_double_arrow_down
-            </span>
-          </button>
+        <button
+          className="deleteTask"
+          onClick={() => {
+            deleteTask(item.id);
+          }}
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+
+        <br></br>
+        {<Timer taskid={item.id}></Timer>}
+        <h1 key={i + "h1"} className="taskHeader">
+          {item.title}
+        </h1>
+        <h2 key={i + "daysleft"}>Days left: {item.timeleft}</h2>
+        <p key={i + "deadline"}>Deadline: {item.deadline}</p>
+        <p key={i + "p"}>{item.description}</p>
+        <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>
+
+        <div className="updownDropdown">
+          <span class="material-symbols-outlined">menu</span>
+          <div className="updownContent">
+            <button
+              onClick={() => {
+                this.customSorting(true, i, true);
+              }}
+            >
+              <span class="material-symbols-outlined">
+                keyboard_double_arrow_up
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                this.customSorting(true, i, false);
+              }}
+            >
+              <span class="material-symbols-outlined">arrow_upward</span>
+            </button>
+            <button
+              onClick={() => {
+                this.customSorting(false, i, false);
+              }}
+            >
+              <span class="material-symbols-outlined">arrow_downward</span>
+            </button>
+            <button
+              onClick={() => {
+                this.customSorting(false, i, true);
+              }}
+            >
+              <span class="material-symbols-outlined">
+                keyboard_double_arrow_down
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     ));
