@@ -7,8 +7,10 @@ const api = axios.create({
 });
 
 function Timer(props) {
-  const taskid = props.taskid;
-  let firstStart;
+  const [taskid, setTaskid] = useState(props.taskid);
+
+  const [firstRender, setFirstRender] = useState(true);
+  /* tracktimers(time, taskid) */
 
   const [active, setActive] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -24,18 +26,57 @@ function Timer(props) {
 
   //Initialize the timer values per task depending on database values etc.
   React.useEffect(() => {
-    api.get("/").then((response) => {
-      let allTimers = response.data;
-      allTimers.forEach((timer) => {
-        if (timer.taskid === taskid && timer.active === true) {
-          console.log("Timer is active for task, ", taskid);
-          firstStart = false;
-          settime(timer.timeInMilliseconds);
-          handleStart();
+    //Also handle prop changed (usually resulting from rearranging the tasks)
+    setTaskid(props.taskid);
+    let activetaskfound = false;
+    if (firstRender) {
+      api.get("/").then((response) => {
+        let allTimers = response.data;
+        allTimers.forEach((timer) => {
+          if (timer.taskid === props.taskid && timer.active === true) {
+            console.log(
+              `WAS MET met at ${props.taskid}, because timer task id was ${timer.taskid} and active stat was ${timer.active}`
+            );
+
+            settime(timer.timeInMilliseconds);
+            handleStartPause();
+            activetaskfound = true;
+          }
+        });
+        if (activetaskfound === false) {
+          settime(0);
+          if (active) {
+            setActive(false);
+          }
         }
+        setFirstRender(false);
       });
-    });
+    }
+
+    console.log(
+      "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+    );
   }, []);
+
+  React.useEffect(() => {
+    setTaskid(props.taskid);
+    console.log(
+      "Task change detected, parent timers at the time were",
+      props.parenttimers,
+      "for id of",
+      taskid
+    );
+    props.parenttimers.forEach((timer) => {
+      if (timer.id === taskid) {
+        settime(timer.time);
+      }
+    });
+  }, [props.taskid, taskid]);
+
+  React.useEffect(() => {
+    console.log("timercomponent: ", time);
+    props.tracktimers(time, props.taskid);
+  }, [time]);
 
   React.useEffect(() => {
     let timeInterval = null;
@@ -58,14 +99,15 @@ function Timer(props) {
     };
   }, [active, paused]);
 
-  const handleStart = () => {
-    if (firstStart) {
-      setstartdate(Date.now());
+  const handleStartPause = () => {
+    if (!active) {
+      if (firstRender) {
+        setstartdate(Date.now());
+      }
+      setActive(true);
+    } else {
+      setActive(false);
     }
-    setActive(true);
-  };
-  const handlePause = () => {
-    setPaused(!paused);
   };
 
   //TODO: send the data to the server when stopping
@@ -76,6 +118,9 @@ function Timer(props) {
   return (
     <>
       <div className="stopwatch">
+        <h1>
+          timer {taskid}, props {props.taskid} start {firstRender.toString()}
+        </h1>
         <span className="stopwatch-minutes">
           {"0" + Math.floor((time / (1000 * 60 * 60)) % 24)}:
         </span>
@@ -85,21 +130,17 @@ function Timer(props) {
         <span className="stopwatch-seconds">
           {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
         </span>
+        <br></br>
+        <span>{time}</span>
 
         <button
           onClick={() => {
-            handleStart();
-          }}
-        >
-          <span className="material-symbols-outlined">play_arrow</span>
-        </button>
-        <button
-          onClick={() => {
-            handlePause();
+            handleStartPause();
           }}
         >
           <span className="material-symbols-outlined">play_pause</span>
         </button>
+
         <button
           onClick={() => {
             handleStop();

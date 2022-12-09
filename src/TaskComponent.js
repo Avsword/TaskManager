@@ -76,9 +76,11 @@ class Todo extends React.Component {
       popupId: 1,
       catPopup: false,
       currentCategory: props.currentCat,
+      timers: [],
     };
     this.popuphandler = this.popuphandler.bind(this);
     this.customSorting = this.customSorting.bind(this);
+    this.tracktimers = this.tracktimers.bind(this);
   }
 
   getComponents = () => {
@@ -178,6 +180,54 @@ class Todo extends React.Component {
     this.setState({ popup: !this.state.popup });
   }
 
+  //Track timers above, so that idk what im even trying to do...
+  tracktimers(time, taskid) {
+    //Can't just push, gotta do edit the value but sure.
+    //If there is already that id being tracked, update the value. If there isn't this id being tracked, push the new key value pair to the state.
+    //If it's undefined, guard that clause
+
+    /*  console.log(this.state.timers.length); */
+    let updated = this.state.timers;
+    let isTracked = false;
+    //Guard that clause my man
+    if ((time || taskid) === undefined) {
+      return;
+    }
+    if (this.state.timers.length === 0) {
+      console.log("len is 0");
+      updated.push({ id: 0, time: 0 });
+    } else {
+      updated.map((task) => {
+        if (task.id === taskid) {
+          console.log(true);
+          //Update the time
+          task.time = time;
+          isTracked = true;
+          console.log(
+            "maps for task",
+            task,
+            "has a time of, ",
+            time,
+            " but the time for this task is: ",
+            task.time,
+            "and the taskid is:",
+            taskid
+          );
+        }
+      });
+      //After map, check if the id was being tracked. If not, then add it to the array of tracked timers.
+      if (!isTracked) {
+        updated.push({ id: taskid, time: time });
+      }
+    }
+    /* 
+    console.log(`Tracktimers called with values: ${time} and id of ${taskid}`); */
+    /*  */
+
+    this.setState({ timers: updated });
+    console.log("timers in parent: ", this.state.timers, "updated,", updated);
+  }
+
   render() {
     //Acts as a guard clause
     if (!this.state.todos.length) return <h1>loading posts...</h1>;
@@ -218,9 +268,18 @@ class Todo extends React.Component {
         </button>
 
         <br></br>
-        {<Timer taskid={item.id}></Timer>}
+        {
+          <Timer
+            taskid={item.id}
+            i={i}
+            tracktimers={this.tracktimers}
+            //Store the timers in the parent element so that when the Timer component
+            //'refreshes' the timer data doesn't have to be pushed and read, but can just handle with a state store in parent
+            parenttimers={this.state.timers}
+          ></Timer>
+        }
         <h1 key={i + "h1"} className="taskHeader">
-          {item.title}
+          task {item.id}
         </h1>
         <h2 key={i + "daysleft"}>Days left: {item.timeleft}</h2>
         <p key={i + "deadline"}>Deadline: {item.deadline}</p>
