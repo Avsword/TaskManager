@@ -9,13 +9,14 @@ const api = axios.create({
 function Timer(props) {
   const [taskid, setTaskid] = useState(props.taskid);
 
+  /* First when we open the tasks, continue active tasks? */
   const [firstRender, setFirstRender] = useState(true);
+  const [startNewTimer, setStartNewTimer] = useState(false);
   /* tracktimers(time, taskid) */
 
   const [active, setActive] = useState(false);
-  const [paused, setPaused] = useState(false);
+
   const [time, settime] = useState(0);
-  const [startdate, setstartdate] = useState(0);
 
   /**
  * "taskid": 1,
@@ -38,16 +39,18 @@ function Timer(props) {
               `WAS MET met at ${props.taskid}, because timer task id was ${timer.taskid} and active stat was ${timer.active}`
             );
 
-            settime(timer.timeInMilliseconds);
+            settime(timer.time);
+            setStartNewTimer(false);
             handleStartPause();
             activetaskfound = true;
           }
         });
+        //If the task was not active in the database, then set the startNewTimer to true for
+        //  ex. setting the  to the task etc.
         if (activetaskfound === false) {
           settime(0);
-          if (active) {
-            setActive(false);
-          }
+          setStartNewTimer(true);
+          setActive(false);
         }
         setFirstRender(false);
       });
@@ -69,20 +72,22 @@ function Timer(props) {
     props.parenttimers.forEach((timer) => {
       if (timer.id === taskid) {
         settime(timer.time);
+        setActive(timer.active);
+        setStartNewTimer(timer.newtimer);
       }
     });
   }, [props.taskid, taskid]);
 
   React.useEffect(() => {
-    console.log("timercomponent: ", time);
-    props.tracktimers(time, props.taskid);
+    /* console.log("timercomponent: ", time); */
+    props.tracktimers(time, props.taskid, active, startNewTimer);
   }, [time]);
 
   React.useEffect(() => {
     let timeInterval = null;
 
     //If the timer for said task is not active, nor paused, then calc time
-    if (active && paused === false) {
+    if (active) {
       timeInterval = setInterval(
         () => {
           settime((time) => time + 1000);
@@ -97,12 +102,22 @@ function Timer(props) {
     return () => {
       clearInterval(timeInterval);
     };
-  }, [active, paused]);
+  }, [active]);
 
-  const handleStartPause = () => {
+  const handleStartPause = async () => {
     if (!active) {
-      if (firstRender) {
-        setstartdate(Date.now());
+      if (startNewTimer) {
+        console.log("date now: ", Date.now());
+        const newtimer = {
+          taskid,
+          active: true,
+          time,
+          startdate: Date.now(),
+        };
+        await api.post("/", newtimer).then(() => {
+          alert("New task was posted to the db");
+          setStartNewTimer(false);
+        });
       }
       setActive(true);
     } else {
@@ -113,13 +128,19 @@ function Timer(props) {
   //TODO: send the data to the server when stopping
   const handleStop = () => {
     setActive(false);
+
+    /* api.post("/", addTask).then(function (response) {
+      alert("Data sent to server");
+      settime(0);
+    }); */
   };
 
   return (
     <>
       <div className="stopwatch">
         <h1>
-          timer {taskid}, props {props.taskid} start {firstRender.toString()}
+          timer {taskid}, props {props.taskid} start {} newtimer
+          {startNewTimer.toString()}
         </h1>
         <span className="stopwatch-minutes">
           {"0" + Math.floor((time / (1000 * 60 * 60)) % 24)}:

@@ -181,7 +181,7 @@ class Todo extends React.Component {
   }
 
   //Track timers above, so that idk what im even trying to do...
-  tracktimers(time, taskid) {
+  tracktimers(time, taskid, active, newtimer) {
     //Can't just push, gotta do edit the value but sure.
     //If there is already that id being tracked, update the value. If there isn't this id being tracked, push the new key value pair to the state.
     //If it's undefined, guard that clause
@@ -202,6 +202,8 @@ class Todo extends React.Component {
           console.log(true);
           //Update the time
           task.time = time;
+          task.active = active;
+          task.newtimer = newtimer;
           isTracked = true;
           console.log(
             "maps for task",
@@ -217,15 +219,20 @@ class Todo extends React.Component {
       });
       //After map, check if the id was being tracked. If not, then add it to the array of tracked timers.
       if (!isTracked) {
-        updated.push({ id: taskid, time: time });
+        updated.push({
+          id: taskid,
+          time: 1,
+          active: active,
+          newtimer: true,
+        });
       }
+      console.log("all timers", this.state.timers);
     }
     /* 
     console.log(`Tracktimers called with values: ${time} and id of ${taskid}`); */
     /*  */
 
     this.setState({ timers: updated });
-    console.log("timers in parent: ", this.state.timers, "updated,", updated);
   }
 
   render() {

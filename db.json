@@ -111,16 +111,51 @@
     {
       "id": 1,
       "taskid": 1,
-      "active": true,
-      "timeInMilliseconds": 20000000,
-      "startedDate": 0
+      "active": false,
+      "time": 20000000,
+      "startedDate": 10000000
     },
     {
-      "id": 1,
-      "taskid": 2,
+      "taskid": 1,
       "active": false,
-      "timeInMilliseconds": 0,
-      "startedDate": 0
+      "time": 25010000,
+      "startdate": 0,
+      "id": 2
+    },
+    {
+      "taskid": 10,
+      "active": false,
+      "time": 0,
+      "startdate": 0,
+      "id": 3
+    },
+    {
+      "taskid": 1,
+      "active": true,
+      "time": 0,
+      "startdate": 1670859791190,
+      "id": 4
+    },
+    {
+      "taskid": 10,
+      "active": true,
+      "time": 0,
+      "startdate": 1670859796895,
+      "id": 5
+    },
+    {
+      "taskid": 6,
+      "active": true,
+      "time": 0,
+      "startdate": 1670859800209,
+      "id": 6
+    },
+    {
+      "taskid": 10,
+      "active": true,
+      "time": 12000,
+      "startdate": 1670859835972,
+      "id": 7
     }
   ]
 }
