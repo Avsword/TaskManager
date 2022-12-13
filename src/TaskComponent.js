@@ -76,11 +76,14 @@ class Todo extends React.Component {
       popupId: 1,
       catPopup: false,
       currentCategory: props.currentCat,
-      timers: [],
+      timers: "",
+      fetchOrLocalstorage: "fetch",
+      fetchedFromLocalstorage: "",
     };
     this.popuphandler = this.popuphandler.bind(this);
     this.customSorting = this.customSorting.bind(this);
     this.tracktimers = this.tracktimers.bind(this);
+    this.localstorage = this.localstorage.bind(this);
   }
 
   getComponents = () => {
@@ -115,16 +118,39 @@ class Todo extends React.Component {
       });
     });
   };
-
-  componentDidMount() {
-    this.getComponents();
-  }
   componentDidUpdate(prevProps) {
     // Typical usage (don't forget to compare props):
     if (this.props.currentCat !== prevProps.currentCat) {
       /* console.log("prop was updated to", this.props.currentCat); */
       this.setState({ currentCategory: this.props.currentCat });
       this.getComponents();
+    }
+  }
+
+  componentDidMount() {
+    this.getComponents();
+    this.localstorage();
+
+    this.setState({ fetchedFromLocalstorage: true });
+    console.log("on mount, the timers from storage are: ", this.state.timers);
+  }
+  localstorage() {
+    if (JSON.parse(window.localStorage.getItem("timers")) === null) {
+      console.log("Localstorage is empty");
+      window.localStorage.setItem(
+        "fetchOrLocalstorage",
+        JSON.stringify("fetch")
+      );
+      console.log("LocalStorage doesnt have anything in it -> fetch");
+      this.state.timers = [];
+    } else if (JSON.parse(window.localStorage.getItem("timers")).length > 1) {
+      console.log("localstorage is NOT empty");
+      window.localStorage.setItem(
+        "fetchOrLocalstorage",
+        JSON.stringify("localstorage")
+      );
+      console.log("Storage is populated");
+      this.state.timers = JSON.parse(window.localStorage.getItem("timers"));
     }
   }
 
@@ -180,24 +206,31 @@ class Todo extends React.Component {
     this.setState({ popup: !this.state.popup });
   }
 
-  //Track timers above, so that idk what im even trying to do...
-  tracktimers(time, taskid, active, newtimer) {
-    //Can't just push, gotta do edit the value but sure.
+  //TIMER COMPONENT SENDS DATA TO DB.JSON, WHEREAS TASKCOMPONENT STORES THE STATE TO LOCALSTORAGE.
+  async tracktimers(time, taskid, active, newtimer) {
+    console.log("TRACKTIMERS GOT: ", time, taskid, active, newtimer);
     //If there is already that id being tracked, update the value. If there isn't this id being tracked, push the new key value pair to the state.
     //If it's undefined, guard that clause
-
-    /*  console.log(this.state.timers.length); */
     let updated = this.state.timers;
+
     let isTracked = false;
     //Guard that clause my man
     if ((time || taskid) === undefined) {
       return;
     }
+
     if (this.state.timers.length === 0) {
       console.log("len is 0");
       updated.push({ id: 0, time: 0 });
+      /*   console.log("UPDATED: ", updated, "TIME, TASKID: ", time, taskid); */
+      window.localStorage.setItem("timers", JSON.stringify(updated));
+      this.localstorage();
     } else {
-      updated.map((task) => {
+      window.localStorage.setItem(
+        "fetchOrLocalstorage",
+        JSON.stringify("localstorage")
+      );
+      await updated.map((task) => {
         if (task.id === taskid) {
           console.log(true);
           //Update the time
@@ -205,34 +238,34 @@ class Todo extends React.Component {
           task.active = active;
           task.newtimer = newtimer;
           isTracked = true;
-          console.log(
-            "maps for task",
-            task,
-            "has a time of, ",
-            time,
-            " but the time for this task is: ",
-            task.time,
-            "and the taskid is:",
-            taskid
-          );
         }
       });
       //After map, check if the id was being tracked. If not, then add it to the array of tracked timers.
       if (!isTracked) {
+        //If it's not tracked, then just doublecheck that we're not adding duplicate values.
+        // (React dev mode sometimes does goofy stuff)
         updated.push({
           id: taskid,
-          time: 1,
+          time: 160,
           active: active,
           newtimer: true,
         });
       }
-      console.log("all timers", this.state.timers);
     }
+
+    console.log(taskid in JSON.parse(window.localStorage.getItem("timers")));
     /* 
     console.log(`Tracktimers called with values: ${time} and id of ${taskid}`); */
     /*  */
 
-    this.setState({ timers: updated });
+    console.log("aaaaaaaaa", JSON.stringify(updated));
+    await window.localStorage.setItem("timers", JSON.stringify(updated));
+    console.log(
+      "all timers",
+      JSON.parse(window.localStorage.getItem("timers"))
+    );
+    /*  window.localStorage.setItem("timers", JSON.stringify(updated)); */
+    /* this.setState({ timers: updated }); */
   }
 
   render() {
@@ -283,6 +316,7 @@ class Todo extends React.Component {
             //Store the timers in the parent element so that when the Timer component
             //'refreshes' the timer data doesn't have to be pushed and read, but can just handle with a state store in parent
             parenttimers={this.state.timers}
+            fetchOrLocalstorage={this.state.fetchOrLocalstorage}
           ></Timer>
         }
         <h1 key={i + "h1"} className="taskHeader">
@@ -294,14 +328,14 @@ class Todo extends React.Component {
         <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>
 
         <div className="updownDropdown">
-          <span class="material-symbols-outlined">menu</span>
+          <span className="material-symbols-outlined">menu</span>
           <div className="updownContent">
             <button
               onClick={() => {
                 this.customSorting(true, i, true);
               }}
             >
-              <span class="material-symbols-outlined">
+              <span className="material-symbols-outlined">
                 keyboard_double_arrow_up
               </span>
             </button>
@@ -310,21 +344,21 @@ class Todo extends React.Component {
                 this.customSorting(true, i, false);
               }}
             >
-              <span class="material-symbols-outlined">arrow_upward</span>
+              <span className="material-symbols-outlined">arrow_upward</span>
             </button>
             <button
               onClick={() => {
                 this.customSorting(false, i, false);
               }}
             >
-              <span class="material-symbols-outlined">arrow_downward</span>
+              <span className="material-symbols-outlined">arrow_downward</span>
             </button>
             <button
               onClick={() => {
                 this.customSorting(false, i, true);
               }}
             >
-              <span class="material-symbols-outlined">
+              <span className="material-symbols-outlined">
                 keyboard_double_arrow_down
               </span>
             </button>
