@@ -32,7 +32,7 @@
     },
     {
       "title": "SET THE Z INDEX",
-      "description": "Why the fuck is it so hard to set a z-index and why does it fuck everything ELSE up?? IT MAKES NO SENSE",
+      "description": "z is hard",
       "deadline": "2022-12-08",
       "timeleft": 0,
       "hoursSpent": "100",
@@ -123,18 +123,19 @@
       "id": 2
     },
     {
-      "taskid": 5,
-      "active": true,
-      "time": 4000,
-      "startdate": 1670957816382,
-      "id": 3
-    },
-    {
       "taskid": 6,
       "active": true,
       "time": 160,
-      "startdate": 1670957838541,
-      "id": 4
+      "startdate": 1671004568515,
+      "id": 5
+    },
+    {
+      "taskid": 5,
+      "active": true,
+      "time": 24000,
+      "startdate": 1671004577992,
+      "id": 6
     }
   ]
 }
+

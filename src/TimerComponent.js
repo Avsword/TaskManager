@@ -1,9 +1,9 @@
-import "./TimerComponent.css";
-import React, { useState } from "react";
-import axios from "axios";
+import './TimerComponent.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: "http://localhost:3010/timers",
+  baseURL: 'http://localhost:3010/timers',
 });
 
 function Timer(props) {
@@ -32,22 +32,27 @@ function Timer(props) {
       JSON.parse(window.localStorage.getItem("timers"))
     ); */
     const timersFromLocal = await JSON.parse(
-      window.localStorage.getItem("timers")
+      window.localStorage.getItem('timers')
     );
     if (timersFromLocal) {
       timersFromLocal.forEach((timerFromStorage) => {
         if (timerFromStorage.id === taskid) {
-          setActive(timerFromStorage.active);
-          settime(timerFromStorage.time);
-          setStartNewTimer(timerFromStorage.newtimer);
-          setFirstRender(false);
-          activetaskfound = true;
-          console.log("Timer was found in local storage.");
+          if (timerFromStorage.time !== 0) {
+            console.log('localstorage for: ', taskid);
+            setActive(timerFromStorage.active);
+            settime(timerFromStorage.time);
+            setStartNewTimer(timerFromStorage.newtimer);
+            setFirstRender(false);
+            activetaskfound = true;
+            console.log('Timer was found in local storage.');
+          }
         }
       });
-    } else if (!activetaskfound) {
+    }
+    if (!activetaskfound) {
+      console.log('fetching for: ', taskid);
       await api
-        .get("/")
+        .get('/')
         .then((response) => {
           let allTimers = response.data;
           allTimers.forEach((timer) => {
@@ -83,16 +88,21 @@ function Timer(props) {
     setTaskid(props.taskid);
     let activetaskfound = false;
 
-    console.log("IN THE TIMER COMPONENT, THE FETCH WAS, ", fetchorlocal);
+    console.log(
+      'IN THE TIMER COMPONENT, THE FETCH WAS, ',
+      fetchorlocal,
+      'FOR TASK ',
+      taskid
+    );
 
     if (firstRender) {
-      if (props.fetchOrLocalstorage === "fetch") {
+      if (props.fetchOrLocalstorage === 'fetch') {
         fetch(activetaskfound);
       }
     }
 
     console.log(
-      "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+      '||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||'
     );
   }, [props.fetchOrLocalstorage, fetchorlocal]);
 
@@ -146,17 +156,17 @@ function Timer(props) {
     //Fetch. It'll stop at the localstorage spot most likely, just to update the startnewtimer
 
     if (!active) {
-      console.log("Start & render", startNewTimer, firstRender);
+      console.log('Start & render', startNewTimer, firstRender);
       if (startNewTimer && !firstRender) {
-        console.log("date now: ", Date.now());
+        console.log('date now: ', Date.now());
         const newtimer = {
           taskid,
           active: true,
           time,
           startdate: Date.now(),
         };
-        await api.post("/", newtimer).then(() => {
-          alert("New task was posted to the db");
+        await api.post('/', newtimer).then(() => {
+          alert('New task was posted to the db');
           setStartNewTimer(false);
         });
       }
@@ -180,19 +190,19 @@ function Timer(props) {
 
   return (
     <>
-      <div className="stopwatch">
-        <h1>
-          timer {taskid}, props {props.taskid} start {} newtimer
+      <div className='stopwatch'>
+        <h1 style={{ color: active ? 'green' : 'red' }}>
+          props {props.taskid} start {} newtimer
           {startNewTimer.toString()}
         </h1>
-        <span className="stopwatch-minutes">
-          {"0" + Math.floor((time / (1000 * 60 * 60)) % 24)}:
+        <span className='stopwatch-minutes'>
+          {'0' + Math.floor((time / (1000 * 60 * 60)) % 24)}:
         </span>
-        <span className="stopwatch-minutes">
-          {("0" + Math.floor((time / 60000) % 60)).slice(-2)}:
+        <span className='stopwatch-minutes'>
+          {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
         </span>
-        <span className="stopwatch-seconds">
-          {("0" + Math.floor((time / 1000) % 60)).slice(-2)}
+        <span className='stopwatch-seconds'>
+          {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
         </span>
         <br></br>
         <span>{time}</span>
@@ -202,7 +212,7 @@ function Timer(props) {
             handleStartPause();
           }}
         >
-          <span className="material-symbols-outlined">play_pause</span>
+          <span className='material-symbols-outlined'>play_pause</span>
         </button>
 
         <button
@@ -210,7 +220,7 @@ function Timer(props) {
             handleStop();
           }}
         >
-          <span className="material-symbols-outlined">stop</span>
+          <span className='material-symbols-outlined'>stop</span>
         </button>
       </div>
     </>
