@@ -10,8 +10,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-const weatherAPIKEY = '0516b4bbd3f44f15922162639221412';
-
 function App() {
   const [time, setTime] = useState('Hello');
 
@@ -92,7 +90,14 @@ function Weather() {
   const [weatherIcon, setWeatherIcon] = useState();
   const [weatherStatus, setWeatherStatus] = useState('sunny');
   const [locationInAPI, setLocationInAPI] = useState('');
-  const [q, setQ] = useState('Shanghai');
+  const [q, setQ] = useState(
+    JSON.parse(window.localStorage.getItem('location')) || 'Helsinki'
+  );
+
+  const [weatherAPIKEY, setweatherAPIKEY] = useState(
+    JSON.parse(window.localStorage.getItem('apikey')) || null
+  );
+  const [userInput, setUserInput] = useState(null);
 
   //Update
   useEffect(() => {
@@ -109,19 +114,35 @@ function Weather() {
         console.warn(`ERROR GETTING THE LOCATION DATA, ${error.code}`);
       }
     );
-    axios
-      .get('https://api.weatherapi.com/v1/current.json', {
-        params: { key: weatherAPIKEY, q: q },
-      })
-      .then((response) => {
-        setWeather(response.data.current);
-        setLocationInAPI(response.data.location.name.toString());
-        setWeatherIcon(response.data.current.condition.icon);
-        setWeatherStatus(response.data.current.condition.text);
-      });
-  }, [q]);
+    if (weatherAPIKEY) {
+      axios
+        .get('https://api.weatherapi.com/v1/current.json', {
+          params: { key: weatherAPIKEY, q: q },
+        })
+        .then((response) => {
+          window.localStorage.setItem('location', JSON.stringify(q));
+          setWeather(response.data.current);
+          setLocationInAPI(response.data.location.name.toString());
+          setWeatherIcon(response.data.current.condition.icon);
+          setWeatherStatus(response.data.current.condition.text);
+        })
+        .catch((error) => {
+          localStorage.removeItem('apikey');
+          setweatherAPIKEY(null);
+          alert(
+            'The API Key was bad. Please re-enter. If this error continues to come up, please contact me at: aaro.varjonen@tuni.fi'
+          );
+        });
+    }
+  }, [q, weatherAPIKEY]);
 
-  return (
+  const submitAPIKEY = (e) => {
+    e.preventDefault();
+    window.localStorage.setItem('apikey', JSON.stringify(userInput));
+    setweatherAPIKEY(userInput);
+  };
+
+  return weatherAPIKEY ? (
     <div className='weather'>
       <h2>
         Current weather in {locationInAPI}: <br></br>
@@ -145,6 +166,24 @@ function Weather() {
       <a href='https://www.weatherapi.com/' title='Free Weather API'>
         WeatherAPI.com
       </a>
+    </div>
+  ) : (
+    <div className='weather'>
+      <h2>Do you have an API Key?</h2>
+      <form onSubmit={submitAPIKEY}>
+        <label>Please input your API Key</label>
+        {
+          <input
+            type={'text'}
+            required
+            value={userInput}
+            onChange={(e) => {
+              setUserInput(e.target.value);
+            }}
+          ></input>
+        }
+        {<input type={'submit'}></input>}
+      </form>
     </div>
   );
 }
