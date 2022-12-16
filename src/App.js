@@ -3,7 +3,7 @@ import './task.css';
 import './nav.css';
 import './weather.css';
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import Hours from './HourComponent';
+import GraphComponent from './GraphComponent';
 import Info from './InfoComponent';
 import Task from './TaskComponent';
 import { useState } from 'react';
@@ -57,7 +57,7 @@ function App() {
               <Link to='/tasks'>Tasks</Link>
             </li>
             <li className='nav-item'>
-              <Link to='/hours'>Hours</Link>
+              <Link to='/time'>Time</Link>
             </li>
             <li className='nav-item'>
               <Link to='/info'>Info</Link>
@@ -72,12 +72,14 @@ function App() {
                 <h1>{time}</h1>
                 <div className='homeWrapper'>
                   <Weather className='weather' />
+
+                  <ImportantTask></ImportantTask>
                 </div>
               </div>
             }
           ></Route>
           <Route path='tasks/*' element={<Task />} />
-          <Route path='hours/*' element={<Hours />} />
+          <Route path='time/*' element={<GraphComponent />} />
           <Route path='info/*' element={<Info />} />
         </Routes>
       </>
@@ -97,7 +99,7 @@ function Weather() {
   const [weatherAPIKEY, setweatherAPIKEY] = useState(
     JSON.parse(window.localStorage.getItem('apikey')) || null
   );
-  const [userInput, setUserInput] = useState(null);
+  const [userInput, setUserInput] = useState('');
 
   //Update
   useEffect(() => {
@@ -141,7 +143,6 @@ function Weather() {
     window.localStorage.setItem('apikey', JSON.stringify(userInput));
     setweatherAPIKEY(userInput);
   };
-
   return weatherAPIKEY ? (
     <div className='weather'>
       <h2>
@@ -169,7 +170,7 @@ function Weather() {
     </div>
   ) : (
     <div className='weather'>
-      <h2>Do you have an API Key?</h2>
+      <h2>To see the current weather, check if you have an API key!</h2>
       <form onSubmit={submitAPIKEY}>
         <label>Please input your API Key</label>
         {
@@ -188,4 +189,54 @@ function Weather() {
   );
 }
 
+function ImportantTask() {
+  const [tasks, setTasks] = useState('');
+
+  const getcomponents = () => {
+    let newDate = new Date();
+    axios.get('http://localhost:3010/tasks').then((response) => {
+      //List full of all the tasks
+      let list = response.data;
+      /* console.log(list); */
+      //Filter out the tasks to the tasks, which are yet to be completed
+      let todolist = [];
+
+      list.forEach((element) => {
+        if (!element.completed) {
+          let deadlineDate = new Date(element.deadline);
+
+          //Floor, since we want to get how many full days we have left. the big number is converting milliseconds to days, since the diff between dates gives the diff in ms
+          element.timeleft = Math.floor((deadlineDate - newDate) / 86400000);
+
+          todolist.push(element);
+        }
+      });
+      //Sort the todolist by time left
+      todolist.sort((a, b) => a.timeleft - b.timeleft);
+      let leastTime = todolist[0];
+
+      setTasks(
+        <div
+          className='leastTime'
+          style={{
+            border: leastTime.timeleft < 0 ? '2px solid red' : 'none',
+          }}
+        >
+          <h1>Task with the least amount of time until deadline</h1>
+          <h2 key={'h1'} className='taskHeader'>
+            {leastTime.title}
+          </h2>
+          <h3 key={'daysleft'}>Days left: {leastTime.timeleft}</h3>
+          <p key={'deadline'}>Deadline: {leastTime.deadline}</p>
+          <p key={'p'}>{leastTime.description}</p>
+        </div>
+      );
+    });
+  };
+  useEffect(() => {
+    getcomponents();
+  }, []);
+
+  return <>{tasks}</>;
+}
 export default App;

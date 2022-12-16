@@ -1,0 +1,12 @@
+.graphComponent > form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.graphComponent > form > input {
+  margin: 4px;
+}
+.graph > canvas {
+  margin: auto;
+  width: 60vw;
+}

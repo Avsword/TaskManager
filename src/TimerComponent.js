@@ -7,6 +7,7 @@ const api = axios.create({
 });
 
 function Timer(props) {
+  const [ID, setID] = useState(null);
   const [taskid, setTaskid] = useState(props.taskid);
   const [fetchorlocal, setFetchorlocal] = useState(props.fetchOrLocalstorage);
 
@@ -19,6 +20,7 @@ function Timer(props) {
 
   const [time, settime] = useState(0);
 
+  const [startdate, setStartdate] = useState(0);
   /**
  * "taskid": 1,
       "active": true,
@@ -41,6 +43,7 @@ function Timer(props) {
             console.log('localstorage for: ', taskid);
             setActive(timerFromStorage.active);
             settime(timerFromStorage.time);
+            setStartdate(timerFromStorage.startdate);
             setStartNewTimer(timerFromStorage.newtimer);
             setFirstRender(false);
             activetaskfound = true;
@@ -56,14 +59,14 @@ function Timer(props) {
         .then((response) => {
           let allTimers = response.data;
           allTimers.forEach((timer) => {
-            if (timer.taskid === props.taskid && timer.active === true) {
-              console.log(
-                `WAS MET met at ${props.taskid}, because timer task id was ${timer.taskid} and active stat was ${timer.active}`
-              );
+            if (timer.taskid === props.taskid && timer.completed === false) {
+              console.log('aaaaaa');
 
               settime(timer.time);
-              setStartNewTimer(false);
+              setStartdate(timer.startdate);
               handleStartPause();
+              setStartNewTimer(false);
+
               activetaskfound = true;
             }
           });
@@ -128,7 +131,7 @@ function Timer(props) {
 
   React.useEffect(() => {
     /* console.log("timercomponent: ", time); */
-    props.tracktimers(time, props.taskid, active, startNewTimer);
+    props.tracktimers(time, props.taskid, active, startNewTimer, startdate);
   }, [time]);
 
   React.useEffect(() => {
@@ -164,7 +167,10 @@ function Timer(props) {
           active: true,
           time,
           startdate: Date.now(),
+          enddate: null,
+          completed: false,
         };
+        setStartdate(Date.now());
         await api.post('/', newtimer).then(() => {
           alert('New task was posted to the db');
           setStartNewTimer(false);
@@ -179,20 +185,50 @@ function Timer(props) {
 
   //TODO: send the data to the server when stopping
   //TIMER COMPONENT SENDS DATA TO DB.JSON, WHEREAS TASKCOMPONENT STORES THE STATE TO LOCALSTORAGE.
-  const handleStop = () => {
+  const handleStop = async () => {
     setActive(false);
+    let timerID = null;
+    //GET timers to get the ID for the active timer so we can put the new 'state' to the db
 
-    /* api.post("/", addTask).then(function (response) {
-      alert("Data sent to server");
+    await api.get('/').then((response) => {
+      let allTimers = response.data;
+      console.log('ALL TIMERS: ', allTimers);
+      console.log('Current taskid: PROPS, NORMAL ', props.taskid, ' ', ID);
+      allTimers.forEach((timer) => {
+        console.log(
+          `timer taskid: ${timer.taskid} props taskid: ${props.taskid} and completed status is: ${timer.completed}`
+        );
+        if (timer.taskid === props.taskid && timer.completed === false) {
+          console.log('TRUE FOR: ', timer);
+          setID(timer.id);
+          timerID = timer.id;
+          console.log('ID IS NOW: ', ID);
+        }
+      });
+    });
+
+    const postTimer = {
+      taskid: taskid,
+      active: false,
+      time: time,
+      startdate: startdate,
+      enddate: Date.now(),
+      completed: true,
+    };
+    console.log('Before put call, id is: ', ID);
+    console.log('Before put call, timer id let is: ', timerID);
+    await api.put(`/${timerID}`, postTimer).then(function (response) {
+      alert('Data sent to server');
       settime(0);
-    }); */
+      setStartNewTimer(true);
+    });
   };
 
   return (
     <>
       <div className='stopwatch'>
         <h1 style={{ color: active ? 'green' : 'red' }}>
-          props {props.taskid} start {} newtimer
+          props {props.taskid} start {startdate} newtimer
           {startNewTimer.toString()}
         </h1>
         <span className='stopwatch-minutes'>

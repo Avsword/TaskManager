@@ -210,8 +210,8 @@ class Todo extends React.Component {
   }
 
   //TIMER COMPONENT SENDS DATA TO DB.JSON, WHEREAS TASKCOMPONENT STORES THE STATE TO LOCALSTORAGE.
-  async tracktimers(time, taskid, active, newtimer) {
-    console.log('TRACKTIMERS GOT: ', time, taskid, active, newtimer);
+  async tracktimers(time, taskid, active, newtimer, startdate) {
+    console.log('TRACKTIMERS GOT: ', startdate);
     //If there is already that id being tracked, update the value. If there isn't this id being tracked, push the new key value pair to the state.
     //If it's undefined, guard that clause
     console.log('timers:  ', JSON.parse(window.localStorage.getItem('timers')));
@@ -226,10 +226,10 @@ class Todo extends React.Component {
       return;
     }
 
-    if (this.state.timers.length === 0) {
+    if (JSON.parse(window.localStorage.getItem('timers')) === null) {
       console.log('len is 0');
       updated.push({ id: 0, time: 0 });
-      /*   console.log("UPDATED: ", updated, "TIME, TASKID: ", time, taskid); */
+
       window.localStorage.setItem('timers', JSON.stringify(updated));
       this.localstorage();
     } else {
@@ -238,17 +238,22 @@ class Todo extends React.Component {
         JSON.stringify('localstorage')
       );
       await updated.map((task) => {
-        if (task.id === taskid) {
+        if (
+          task.id === taskid /* &&
+          startdate !== undefined */ /*  && startdate !== 0 */
+        ) {
           console.log(true);
           //Update the time
           task.time = time;
           task.active = active;
           task.newtimer = newtimer;
           isTracked = true;
+          task.startdate = startdate;
         }
       });
+      console.log('UPDATED: ', updated);
       //After map, check if the id was being tracked. If not, then add it to the array of tracked timers.
-      if (!isTracked) {
+      if (!isTracked && startdate !== undefined /*  && startdate !== 0 */) {
         //If it's not tracked, then just doublecheck that we're not adding duplicate values.
         // (React dev mode sometimes does goofy stuff)
         updated.push({
@@ -256,6 +261,7 @@ class Todo extends React.Component {
           time: 0,
           active: active,
           newtimer: true,
+          startdate: startdate,
         });
       }
     }
