@@ -223,12 +223,20 @@ function ImportantTask() {
           }}
         >
           <h1>Task with the least amount of time until deadline</h1>
-          <h2 key={'h1'} className='taskHeader'>
-            {leastTime.title}
-          </h2>
-          <h3 key={'daysleft'}>Days left: {leastTime.timeleft}</h3>
-          <p key={'deadline'}>Deadline: {leastTime.deadline}</p>
-          <p key={'p'}>{leastTime.description}</p>
+          <div
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.1)',
+              padding: '5px',
+              borderRadius: '8px',
+            }}
+          >
+            <h2 key={'h1'} className='taskHeader'>
+              {leastTime.title}
+            </h2>
+            <h3 key={'daysleft'}>Days left: {leastTime.timeleft}</h3>
+            <p key={'deadline'}>Deadline: {leastTime.deadline}</p>
+            <p key={'p'}>{leastTime.description}</p>
+          </div>
         </div>
       );
     });

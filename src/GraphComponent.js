@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './graph.css';
 import {
@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 
-import { Bar } from 'react-chartjs-2';
+import { Bar, getElementAtEvent } from 'react-chartjs-2';
 
 //This hasn't been explained ANYWHERE in the chart.js documentation.
 //All I know is that it needs to be there. wtf.
@@ -24,6 +24,7 @@ ChartJS.register(
   Legend
 );
 function Graph() {
+  const chartRef = useRef();
   const [validGraphs, setValidGraphs] = useState({
     labels: [],
     datasets: [],
@@ -35,11 +36,17 @@ function Graph() {
     new Date(Date.now()).toISOString().split('T')[0]
   );
   const [startDate, setStartDate] = useState(Date.now() - 604800000);
-  const [endDate, setEndDate] = useState(Date.now());
+  const [endDate, setEndDate] = useState(5671228863007); /*Date.now() */
+  const [tasksShown, setTasksShown] = useState('all');
+  const [rawData, setRawData] = useState({});
+  const [indexToTaskID, setIndexToTaskID] = useState([]);
+  const [useMinutes, setUseMinutes] = useState(true);
 
   useEffect(() => {
+    console.log('RERENDER');
     let completedTimersTaskIDs = [];
     let fullTimers = [];
+    const minutesOrHours = useMinutes ? 60000 : 3600000;
     axios
       .get('http://localhost:3010/timers/')
       .then((response) => {
@@ -47,63 +54,118 @@ function Graph() {
 
         //Check for each of the objects if the task is completed and if the start and end dates
         //Are within our guide limits.
+        let letrawData = [];
         data.forEach((log) => {
           if (
             log.completed === true &&
             log.startdate >= startDate &&
             log.enddate <= endDate
           ) {
-            //Check if the taskid is already being counted, if it is, then add to the total sum
-            if (fullTimers.some((e) => e.taskid === log.taskid)) {
-              let i = fullTimers.findIndex(
-                (timer) => timer.taskid === log.taskid
-              );
+            /*  console.log('FULL LOG,', log); */
+            letrawData.push(log);
 
-              fullTimers[i] = {
-                taskid: fullTimers[i].taskid,
-                time: fullTimers[i].time + log.time,
-              };
-            } else {
-              //If it isn't being counted, then add it to the array
-              fullTimers.push({ taskid: log.taskid, time: log.time });
+            //Check if we want to show all tasks or just one task
+            if (tasksShown === 'all') {
+              //Check if the taskid is already being counted, if it is, then add to the total sum
+              if (fullTimers.some((e) => e.taskid === log.taskid)) {
+                let i = fullTimers.findIndex(
+                  (timer) => timer.taskid === log.taskid
+                );
+
+                fullTimers[i] = {
+                  taskid: fullTimers[i].taskid,
+                  time: fullTimers[i].time + log.time,
+                };
+              } else {
+                //If it isn't being counted, then add it to the array
+                fullTimers.push({ taskid: log.taskid, time: log.time });
+              }
+            } else if (log.taskid === tasksShown) {
+              //Check also if the id is the same that we want
+              console.log(`OK NOW ITS THE SAME AS THE ONE WE PRESSED:`, log);
             }
+
             //We are going to use the timerIDs which are logged to fetch the actual task labels from another endpoint
             if (!completedTimersTaskIDs.includes(log.taskid)) {
               completedTimersTaskIDs.push(log.taskid);
             }
           }
         });
-        /* console.log(completedTimersTaskIDs);
-        console.log('FULL TIMERS: ', fullTimers); */
+        setRawData(letrawData);
+        /* console.log(completedTimersTaskIDs); */
+        /* console.log('FULL TIMERS: ', fullTimers); */
+        setIndexToTaskID(fullTimers);
       })
       //After all of that is done, fetch the labels
       .then(async () => {
-        await axios.get('http://localhost:3010/tasks/').then((response) => {
-          let allTasks = response.data;
-
-          allTasks.forEach((element) => {
-            if (completedTimersTaskIDs.includes(element.id)) {
-              let i = fullTimers.findIndex(
-                (timer) => timer.taskid === element.id
-              );
-
-              fullTimers[i] = {
-                taskid: fullTimers[i].taskid,
-                time: fullTimers[i].time,
-                title: element.title,
-              };
-            }
-          });
-        });
-        console.log('Fulltimers with labels: ', fullTimers);
         let letLabels = [];
         let letdata = [];
-        for (let index = 0; index < fullTimers.length; index++) {
-          const element = fullTimers[index];
-          console.log('Timer element: ', element);
-          letLabels.push(element.title);
-          letdata.push(element.time / 60000);
+        if (tasksShown === 'all') {
+          await axios.get('http://localhost:3010/tasks/').then((response) => {
+            let allTasks = response.data;
+
+            allTasks.forEach((element) => {
+              if (completedTimersTaskIDs.includes(element.id)) {
+                let i = fullTimers.findIndex(
+                  (timer) => timer.taskid === element.id
+                );
+
+                fullTimers[i] = {
+                  taskid: fullTimers[i].taskid,
+                  time: fullTimers[i].time,
+                  title: element.title,
+                };
+              }
+            });
+          });
+          for (let index = 0; index < fullTimers.length; index++) {
+            const element = fullTimers[index];
+            console.log('Timer element: ', element);
+            letLabels.push(element.title);
+            letdata.push(element.time / minutesOrHours);
+          }
+        } else {
+          await axios
+            .get(`http://localhost:3010/tasks/${tasksShown}`)
+            .then(() => {
+              rawData.forEach((element) => {
+                //Check if the task id is the correct one
+                if (element.taskid === tasksShown) {
+                  //We want to get each DAY logged, so... check if the date is the same?
+                  let ms = new Date(element.startdate);
+                  let enddate = new Date(element.enddate);
+                  let date = `${ms.getFullYear()}-${
+                    ms.getMonth() + 1
+                  }-${ms.getDate()}`;
+                  let enddatedate = `${enddate.getFullYear()}-${
+                    enddate.getMonth() + 1
+                  }-${enddate.getDate()}`;
+                  console.log(`DATE: ${date} and end date is=${enddatedate}`);
+
+                  if (fullTimers.some((e) => e.day === enddatedate)) {
+                    console.log('Multiple records on same day');
+                  } else if (
+                    element.startdate >= startDate &&
+                    element.enddate <= endDate
+                  ) {
+                    console.log(
+                      'push to fulltimers for: ',
+                      element.startdate,
+                      'when the starting and end dates are: ',
+                      inputStartDate
+                    );
+                    console.log(element.startdate >= startDate);
+                    console.log(element.enddate <= endDate);
+
+                    letLabels.push(enddatedate);
+                    letdata.push(element.time / minutesOrHours);
+                    fullTimers.push({ day: enddatedate, time: element.time });
+                  }
+                }
+              });
+            });
         }
+        console.log('Fulltimers with labels: ', fullTimers);
 
         await console.log('labels: ', letLabels);
         await console.log('data: ', letdata);
@@ -111,7 +173,7 @@ function Graph() {
           labels: letLabels,
           datasets: [
             {
-              label: 'Logged minutes',
+              label: `Logged${useMinutes ? ' minutes' : ' hours'}`,
               data: letdata,
               backgroundColor: `rgba(${0 + Math.random() * (255 - 0)}, ${
                 0 + Math.random() * (255 - 0)
@@ -122,7 +184,19 @@ function Graph() {
 
         await console.log('Valid Graphs: CONFIG: ', validGraphs);
       });
-  }, [startDate, endDate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDate, endDate, tasksShown, useMinutes]);
+
+  //Get element on click for further investigation :)
+  const onClick = async (e) => {
+    let onclickindex = await getElementAtEvent(chartRef.current, e)[0].index;
+
+    await setTasksShown(indexToTaskID[onclickindex].taskid);
+  };
+
+  const toggleHours = (e) => {
+    setUseMinutes(!useMinutes);
+  };
 
   return (
     <div className='graphComponent'>
@@ -133,13 +207,15 @@ function Graph() {
           required
           value={inputStartDate}
           onChange={(eventObject) => {
-            setInputStartDate(eventObject.target.value);
+            setInputStartDate(
+              new Date(eventObject.target.value).toISOString().split('T')[0]
+            );
             var result = new Date(eventObject.target.value);
-            console.log('afwafwagwagg', result);
+
             result.setDate(result.getDate() + 7);
-            console.log('afwafwagwagg', result);
+
             //automatically set the enddate to +7 days
-            setInputEndDate(eventObject.target.value + 7);
+            /* setInputEndDate(eventObject.target.value + 7); */
             setStartDate(Date.parse(eventObject.target.value));
           }}
         ></input>
@@ -151,14 +227,43 @@ function Graph() {
           value={inputEndDate}
           min={inputStartDate}
           onChange={(eventObject) => {
-            setInputEndDate(eventObject.target.value);
+            setInputEndDate(
+              new Date(eventObject.target.value).toISOString().split('T')[0]
+            );
             setEndDate(Date.parse(eventObject.target.value));
           }}
         ></input>
       </form>
+      <div className='toggleHours'>
+        <button
+          onClick={() => {
+            toggleHours();
+          }}
+        >
+          <label>Hours/Minutes</label>
+
+          {useMinutes ? (
+            <span class='material-symbols-outlined'>toggle_on</span>
+          ) : (
+            <span class='material-symbols-outlined'>toggle_off</span>
+          )}
+        </button>
+      </div>
+      <div
+        className='backArrow'
+        style={{ display: tasksShown === 'all' ? 'none' : 'block' }}
+      >
+        <button
+          onClick={() => {
+            setTasksShown('all');
+          }}
+        >
+          <span class='material-symbols-outlined'>arrow_back</span>
+        </button>
+      </div>
       <br></br>
       <div className='graph'>
-        <Bar data={validGraphs}></Bar>
+        <Bar data={validGraphs} ref={chartRef} onClick={onClick}></Bar>
       </div>
     </div>
   );

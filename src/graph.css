@@ -1,4 +1,5 @@
-.graphComponent > form {
+.graphComponent > form,
+.toggleHours {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,3 +11,34 @@
   margin: auto;
   width: 60vw;
 }
+.backArrow > button,
+.toggleHours > button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  margin: auto;
+}
+.toggleHours > button > span {
+  position: relative;
+  top: 7px;
+}
+/*
+if (fullTimers.some((e) => e.taskid === log.taskid)) {
+                let i = fullTimers.findIndex(
+                  (timer) => timer.taskid === log.taskid
+                );
+
+                fullTimers[i] = {
+                  taskid: fullTimers[i].taskid,
+                  time: fullTimers[i].time + log.time,
+                };
+              } else {
+                //If it isn't being counted, then add it to the array
+                fullTimers.push({ taskid: log.taskid, time: log.time });
+              }
+*/

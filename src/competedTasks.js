@@ -1,8 +1,8 @@
-import React from "react";
-import axios from "axios";
-import { flipCompleted, deleteTask } from "./taskButtons";
+import React from 'react';
+import axios from 'axios';
+import { flipCompleted, deleteTask } from './taskButtons';
 const api = axios.create({
-  baseURL: "http://localhost:3010/tasks",
+  baseURL: 'http://localhost:3010/tasks',
 });
 
 class completed extends React.Component {
@@ -27,7 +27,7 @@ class completed extends React.Component {
     }
   }
   getComponents = () => {
-    api.call("/").then((response) => {
+    api.call('/').then((response) => {
       //List full of all the tasks
       let list = response.data;
       //Filter out the tasks to the tasks, which are yet to be completed
@@ -39,7 +39,7 @@ class completed extends React.Component {
           //Check if we are sorting by any category and then push the correct task to the array
           if (
             element.category === this.state.currentCategory ||
-            this.state.currentCategory === "all"
+            this.state.currentCategory === 'all'
           ) {
             completedlist.push(element);
           }
@@ -56,31 +56,31 @@ class completed extends React.Component {
     if (!this.state.completed.length) return <h1>loading posts...</h1>;
 
     let completedsmap = this.state.completed.map((item, i) => (
-      <div key={i + "wrapper"} className="completed">
+      <div key={i + 'wrapper'} className='completed'>
         <button
-          className="completeTask"
+          className='completeTask'
           onClick={() => {
             flipCompleted(item.id, item.completed);
           }}
         >
-          <span className="material-symbols-outlined">undo</span>
+          <span className='material-symbols-outlined'>undo</span>
         </button>
         <button
-          className="deleteTask"
+          className='deleteTask'
           onClick={() => {
             deleteTask(item.id);
           }}
         >
-          <span className="material-symbols-outlined">close</span>
+          <span className='material-symbols-outlined'>close</span>
         </button>
         <br></br>
-        <h1 key={i + "h1"}>{item.title}</h1>{" "}
-        <p key={i + "p"}>{item.description}</p>
-        <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p>
+        <h1 key={i + 'h1'}>{item.title}</h1>{' '}
+        <p key={i + 'p'}>{item.description}</p>
+        {/* <p key={i + "hours"}>Hours spent: {item.hoursSpent}</p> */}
       </div>
     ));
 
-    return <div className="allCompleted">{completedsmap}</div>;
+    return <div className='allCompleted'>{completedsmap}</div>;
   }
 }
 export default completed;

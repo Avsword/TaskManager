@@ -41,6 +41,7 @@ function Subpage() {
           <h1>How to use this web app</h1>
           <h2>Tasks</h2>
           <h2>Time</h2>
+          <p>By default, it shows you the past week of progress.</p>
         </>
       );
     case 'legal':

@@ -338,7 +338,7 @@ class Todo extends React.Component {
         <h2 key={i + 'daysleft'}>Days left: {item.timeleft}</h2>
         <p key={i + 'deadline'}>Deadline: {item.deadline}</p>
         <p key={i + 'p'}>{item.description}</p>
-        <p key={i + 'hours'}>Hours spent: {item.hoursSpent}</p>
+        {/* <p key={i + 'hours'}>Hours spent: {item.hoursSpent}</p> */}
 
         <div className='updownDropdown'>
           <span className='material-symbols-outlined'>menu</span>
