@@ -6,13 +6,19 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import GraphComponent from './GraphComponent';
 import Info from './InfoComponent';
 import Task from './TaskComponent';
-import { useState } from 'react';
-import { useEffect } from 'react';
+
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { ThemeContext } from './themeContext';
 
 function App() {
   const [time, setTime] = useState('Hello');
+  //Set the context
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
+  //Set the body background to react to the theme colour.
+  document.body.style.backgroundColor =
+    theme === 'light' ? '#ebeee6' : '#1c161c';
   useEffect(() => {
     //Get current date for home text
     const hours = new Date().getHours();
@@ -47,29 +53,43 @@ function App() {
 
   return (
     <BrowserRouter>
-      <>
+      <div className={`main${theme}`}>
         <nav>
           <ul className='nav-list'>
-            <li className='nav-item'>
+            <button
+              className='toggleMode'
+              onClick={() => {
+                toggleTheme();
+              }}
+            >
+              {theme === 'light' ? (
+                <span className='material-symbols-outlined'>light_mode</span>
+              ) : (
+                <span className='material-symbols-outlined'>dark_mode</span>
+              )}
+            </button>
+            <li className={`nav-item${theme}`}>
               <Link to='/'>Home</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='/tasks'>Tasks</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='/time'>Time</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='/info'>Info</Link>
             </li>
           </ul>
         </nav>
+
         <Routes>
           <Route
             path='/'
             element={
               <div className='home'>
                 <h1>{time}</h1>
+
                 <div className='homeWrapper'>
                   <Weather className='weather' />
 
@@ -82,7 +102,7 @@ function App() {
           <Route path='time/*' element={<GraphComponent />} />
           <Route path='info/*' element={<Info />} />
         </Routes>
-      </>
+      </div>
     </BrowserRouter>
   );
 }
@@ -190,6 +210,7 @@ function Weather() {
 }
 
 function ImportantTask() {
+  const { theme } = useContext(ThemeContext);
   const [tasks, setTasks] = useState('');
 
   const getcomponents = () => {
@@ -225,7 +246,7 @@ function ImportantTask() {
           <h1>Task with the least amount of time until deadline</h1>
           <div
             style={{
-              backgroundColor: 'rgba(0,0,0,0.1)',
+              backgroundColor: 'rgba(0,0,0,0.2)',
               padding: '5px',
               borderRadius: '8px',
             }}

@@ -1,15 +1,20 @@
-.graphComponent > form,
+.inputStart,
+.inputEnd,
 .toggleHours {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.graphComponent > form > input {
+.graphComponent > form > div > input {
   margin: 4px;
 }
 .graph > canvas {
   margin: auto;
-  width: 60vw;
+  width: 80vw;
+}
+.backArrow {
+  width: fit-content;
+  margin-left: 20vw;
 }
 .backArrow > button,
 .toggleHours > button {
@@ -27,18 +32,6 @@
   position: relative;
   top: 7px;
 }
-/*
-if (fullTimers.some((e) => e.taskid === log.taskid)) {
-                let i = fullTimers.findIndex(
-                  (timer) => timer.taskid === log.taskid
-                );
-
-                fullTimers[i] = {
-                  taskid: fullTimers[i].taskid,
-                  time: fullTimers[i].time + log.time,
-                };
-              } else {
-                //If it isn't being counted, then add it to the array
-                fullTimers.push({ taskid: log.taskid, time: log.time });
-              }
-*/
+.input {
+  display: block;
+}

@@ -1,7 +1,7 @@
 {
   "tasks": [
     {
-      "title": "Finish this programming assignment",
+      "title": "Finish this assignment",
       "description": "Having a lot of fun with it so far!",
       "deadline": "2022-09-14",
       "timeleft": 0,
@@ -11,42 +11,22 @@
       "id": 1
     },
     {
-      "title": "Finish the Jaalto testing report",
-      "description": "It's not that I dislike it, we just could've had testing homework instead of a big  essay",
-      "deadline": "2022-11-30",
-      "timeleft": 0,
-      "hoursSpent": 0,
-      "category": "general",
-      "completed": true,
-      "id": 2
-    },
-    {
-      "title": "Usability and testing report",
-      "description": "Should be easy enough, but we'll see",
-      "deadline": "2023-10-08",
-      "timeleft": 0,
-      "hoursSpent": 4,
-      "category": "general",
-      "completed": false,
-      "id": 3
-    },
-    {
       "title": "SET THE Z INDEX",
       "description": "z is hard",
       "deadline": "2022-12-08",
       "timeleft": 0,
       "hoursSpent": "100",
-      "category": "hobby",
-      "completed": false,
+      "category": "general",
+      "completed": true,
       "id": 5
     },
     {
-      "title": "Task functionality",
-      "description": "Add task functionality with database categories. I am SICK FROM THE CATEGORIES",
+      "title": "Make work on firefox",
+      "description": "Firefox is surprisingly tricky, so just know that I'm doing this for you, Teemu!",
       "deadline": "2023-02-18",
       "timeleft": 0,
       "hoursSpent": 0,
-      "category": "videogames",
+      "category": "chore",
       "completed": false,
       "id": 6
     },
@@ -61,13 +41,13 @@
       "id": 7
     },
     {
-      "title": "Add the window reload",
-      "description": "I think I added it? But after 36 hours of straight coding with 1 hour of sleep. It feels like a chore",
+      "title": "Grade this assignment",
+      "description": "this has taken.. way too long, but atleast now I know a lot about React",
       "deadline": "2022-11-28",
       "timeleft": 0,
       "hoursSpent": 0,
       "category": "general",
-      "completed": true,
+      "completed": false,
       "id": 8
     },
     {
@@ -79,6 +59,26 @@
       "category": "general",
       "completed": true,
       "id": 10
+    },
+    {
+      "title": "Get a Pokémon Tattoo",
+      "description": "I'd like an Empoleon tattoo",
+      "deadline": "2022-12-30",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "videogames",
+      "completed": false,
+      "id": 11
+    },
+    {
+      "title": "Turn this in",
+      "description": "And turn myself in (jk)",
+      "deadline": "2022-12-29",
+      "timeleft": 0,
+      "hoursSpent": 0,
+      "category": "videogames",
+      "completed": false,
+      "id": 12
     }
   ],
   "categories": [
@@ -199,32 +199,174 @@
       "id": 10
     },
     {
-      "taskid": 1,
+      "taskid": 5,
       "active": false,
-      "time": 35020,
-      "startdate": 1671328825195,
-      "enddate": 1671428825195,
+      "time": 91020,
+      "startdate": 1671366952682,
+      "enddate": 1671367112906,
       "completed": true,
-      "id": 10
+      "id": 12
+    },
+    {
+      "taskid": 5,
+      "active": false,
+      "time": 472020,
+      "enddate": 1671372369962,
+      "completed": true,
+      "id": 13
+    },
+    {
+      "taskid": 3,
+      "active": false,
+      "time": 12020,
+      "startdate": 1671372361395,
+      "enddate": 1671372374364,
+      "completed": true,
+      "id": 16
+    },
+    {
+      "taskid": 6,
+      "active": false,
+      "time": 9020,
+      "startdate": 1671372365771,
+      "enddate": 1671372375309,
+      "completed": true,
+      "id": 17
+    },
+    {
+      "taskid": 5,
+      "active": false,
+      "time": 32020,
+      "startdate": 1671373423643,
+      "enddate": 1671373458423,
+      "completed": true,
+      "id": 18
+    },
+    {
+      "taskid": 8,
+      "active": false,
+      "time": 117020,
+      "startdate": 1671387290974,
+      "enddate": 1671387580697,
+      "completed": true,
+      "id": 19
+    },
+    {
+      "taskid": 2,
+      "active": false,
+      "time": 200020,
+      "startdate": 1671387907725,
+      "enddate": 1671388979107,
+      "completed": true,
+      "id": 20
+    },
+    {
+      "taskid": 8,
+      "active": false,
+      "time": 11020,
+      "startdate": 1671389398303,
+      "enddate": 1671389411097,
+      "completed": true,
+      "id": 21
+    },
+    {
+      "taskid": 6,
+      "active": false,
+      "time": 7020,
+      "startdate": 1671389836660,
+      "enddate": 1671389845089,
+      "completed": true,
+      "id": 22
     },
     {
       "taskid": 1,
       "active": false,
-      "time": 35020,
-      "startdate": 1671228825195,
-      "enddate": 1671228863007,
+      "time": 188020,
+      "startdate": 1671392670738,
+      "enddate": 1671393094475,
       "completed": true,
-      "id": 10
+      "id": 23
     },
     {
       "taskid": 1,
       "active": false,
-      "time": 3600000,
-      "startdate": 1672301404372,
-      "enddate": 1673301462818,
+      "time": 14020,
+      "startdate": 1671372334239,
+      "enddate": 1671822257668,
       "completed": true,
-      "id": 11
+      "id": 14
+    },
+    {
+      "taskid": 1,
+      "active": false,
+      "time": 140020,
+      "startdate": 1671372334239,
+      "enddate": 1672167857668,
+      "completed": true,
+      "id": 14
+    },
+    {
+      "taskid": 6,
+      "active": false,
+      "time": 95020,
+      "startdate": 1671393558817,
+      "enddate": 1671393657375,
+      "completed": true,
+      "id": 24
+    },
+    {
+      "taskid": 6,
+      "active": false,
+      "time": 487020,
+      "startdate": 1671393749124,
+      "enddate": 1671395068503,
+      "completed": true,
+      "id": 25
+    },
+    {
+      "taskid": 11,
+      "active": false,
+      "time": 36020,
+      "startdate": 1671395037206,
+      "enddate": 1671395073741,
+      "completed": true,
+      "id": 26
+    },
+    {
+      "taskid": 8,
+      "active": false,
+      "time": 33020,
+      "startdate": 1671395309797,
+      "enddate": 1671395402370,
+      "completed": true,
+      "id": 27
+    },
+    {
+      "taskid": 11,
+      "active": false,
+      "time": 25020,
+      "startdate": 1671395316660,
+      "enddate": 1671395401443,
+      "completed": true,
+      "id": 28
+    },
+    {
+      "taskid": 6,
+      "active": false,
+      "time": 80020,
+      "startdate": 1671395320161,
+      "enddate": 1671395403356,
+      "completed": true,
+      "id": 29
+    },
+    {
+      "taskid": 12,
+      "active": false,
+      "time": 20020,
+      "startdate": 1671396417822,
+      "enddate": 1671396438446,
+      "completed": true,
+      "id": 30
     }
   ]
 }
-

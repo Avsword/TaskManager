@@ -6,19 +6,33 @@
 .categoryform {
   margin-top: 10px;
 }
-.categories-select {
+.categories-selectlight,
+.categories-selectdark {
   max-width: 60%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
-.categories-select button {
+.categories-selectlight button {
   flex: 1;
 
   border-radius: 8px;
   border: 2px solid #6e0000;
   background-color: #ebeee6;
+
+  filter: brightness(98%);
+  margin: 10px;
+
+  cursor: pointer;
+}
+.categories-selectdark button {
+  flex: 1;
+
+  border-radius: 8px;
+  border: 2px solid #6e0000;
+  background-color: #1c161c;
+  color: #fef8d8;
 
   filter: brightness(98%);
   margin: 10px;
@@ -64,4 +78,7 @@
   position: relative;
   top: 0.125em;
   right: 2.5em;
+}
+.categoryform button span {
+  color: '#6e0000';
 }

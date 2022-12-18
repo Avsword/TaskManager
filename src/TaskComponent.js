@@ -1,6 +1,6 @@
 import { Link, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Completed from './competedTasks';
 import NewTask from './newTask';
 import './category.css';
@@ -8,12 +8,14 @@ import { flipCompleted, deleteTask } from './taskButtons';
 import EditPopup from './EditPopup';
 import Categories from './Categories';
 import Timer from './TimerComponent';
+import { ThemeContext } from './themeContext';
 
 const api = axios.create({
   baseURL: 'http://localhost:3010/tasks',
 });
 
 function Task() {
+  const { theme } = useContext(ThemeContext);
   const [currCat, setcurrCat] = useState('all');
   const handleCategoryChange = (category) => {
     /*  console.log("handler in taskComponent got a category: ", category); */
@@ -29,16 +31,16 @@ function Task() {
       <nav>
         <ul className='nav-list'>
           <div className='nav-item-wrapper'>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='todo'>TODO</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='completed'>Completed</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <Link to='newtask'>New task</Link>
             </li>
-            <li className='nav-item'>
+            <li className={`nav-item${theme}`}>
               <button
                 className='catPopup'
                 onClick={() => {
@@ -68,6 +70,7 @@ function Task() {
 }
 
 class Todo extends React.Component {
+  static contextType = ThemeContext;
   constructor(props) {
     super();
     this.state = {
@@ -76,9 +79,10 @@ class Todo extends React.Component {
       popupId: 1,
       catPopup: false,
       currentCategory: props.currentCat,
-      timers: '',
+      timers: [],
       fetchOrLocalstorage: 'fetch',
       fetchedFromLocalstorage: '',
+      theme: '',
     };
     this.popuphandler = this.popuphandler.bind(this);
     this.customSorting = this.customSorting.bind(this);
@@ -118,7 +122,7 @@ class Todo extends React.Component {
       });
     });
   };
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, nextState) {
     // Typical usage (don't forget to compare props):
     if (this.props.currentCat !== prevProps.currentCat) {
       /* console.log("prop was updated to", this.props.currentCat); */
@@ -128,32 +132,34 @@ class Todo extends React.Component {
   }
 
   componentDidMount() {
+    const theme = this.context;
+    this.setState({ theme: theme.theme });
     this.getComponents();
     this.localstorage();
 
     this.setState({ fetchedFromLocalstorage: true });
-    console.log('on mount, the timers from storage are: ', this.state.timers);
   }
   localstorage() {
     if (JSON.parse(window.localStorage.getItem('timers')) === null) {
-      console.log('Localstorage is empty');
       window.localStorage.setItem(
         'fetchOrLocalstorage',
         JSON.stringify('fetch')
       );
-      console.log('LocalStorage doesnt have anything in it -> fetch');
-      this.state.timers = [];
+
+      //Firefox crashed when using this.timers.setState() so I HAVE to do this this way... my apologies.
+      //Also the deadline is nearing
+      // eslint-disable-next-line react/no-direct-mutation-state
+      /* this.state.timers = []; */
     } else if (
       JSON.parse(window.localStorage.getItem('timers')).length ===
       this.state.todos.length
     ) {
-      console.log('localstorage is NOT empty');
       window.localStorage.setItem(
         'fetchOrLocalstorage',
         JSON.stringify('localstorage')
       );
-      console.log('Storage is populated');
-      this.state.timers = JSON.parse(window.localStorage.getItem('timers'));
+
+      this.timers.setState(JSON.parse(window.localStorage.getItem('timers')));
     }
   }
 
@@ -166,9 +172,7 @@ class Todo extends React.Component {
       (mapindex === 0 && upDownBool === true) ||
       (mapindex === this.state.todos.length - 1 && upDownBool === false)
     ) {
-      console.log('Edge case detected!');
     } else {
-      console.log('todos: ', this.state.todos);
       //Initalize the new order here just so it's easier for me to understand what I'm coding.
       let newOrder = this.state.todos;
 
@@ -211,10 +215,9 @@ class Todo extends React.Component {
 
   //TIMER COMPONENT SENDS DATA TO DB.JSON, WHEREAS TASKCOMPONENT STORES THE STATE TO LOCALSTORAGE.
   async tracktimers(time, taskid, active, newtimer, startdate) {
-    console.log('TRACKTIMERS GOT: ', startdate);
     //If there is already that id being tracked, update the value. If there isn't this id being tracked, push the new key value pair to the state.
     //If it's undefined, guard that clause
-    console.log('timers:  ', JSON.parse(window.localStorage.getItem('timers')));
+
     let updated =
       JSON.parse(window.localStorage.getItem('timers')) === null
         ? []
@@ -227,7 +230,6 @@ class Todo extends React.Component {
     }
 
     if (JSON.parse(window.localStorage.getItem('timers')) === null) {
-      console.log('len is 0');
       updated.push({ id: 0, time: 0 });
 
       window.localStorage.setItem('timers', JSON.stringify(updated));
@@ -237,12 +239,24 @@ class Todo extends React.Component {
         'fetchOrLocalstorage',
         JSON.stringify('localstorage')
       );
-      await updated.map((task) => {
-        if (
-          task.id === taskid /* &&
-          startdate !== undefined */ /*  && startdate !== 0 */
+      /*  for (let i = 0; i < updated.length; i++) {
+        let task = updated[i]
+         if (
+          task.id === taskid 
         ) {
-          console.log(true);
+          //Update the time
+          task.time = time;
+          task.active = active;
+          task.newtimer = newtimer;
+          isTracked = true;
+          task.startdate = startdate;
+        }
+      } */
+
+      //Doesn't work with the for loop above. Why? Maybe it doesn't have await in front of it, idk but the deadline is coming and I have to hurry
+      // eslint-disable-next-line array-callback-return
+      await updated.map((task) => {
+        if (task.id === taskid) {
           //Update the time
           task.time = time;
           task.active = active;
@@ -251,7 +265,7 @@ class Todo extends React.Component {
           task.startdate = startdate;
         }
       });
-      console.log('UPDATED: ', updated);
+
       //After map, check if the id was being tracked. If not, then add it to the array of tracked timers.
       if (!isTracked && startdate !== undefined /*  && startdate !== 0 */) {
         //If it's not tracked, then just doublecheck that we're not adding duplicate values.
@@ -265,20 +279,7 @@ class Todo extends React.Component {
         });
       }
     }
-
-    console.log(taskid in JSON.parse(window.localStorage.getItem('timers')));
-    /* 
-    console.log(`Tracktimers called with values: ${time} and id of ${taskid}`); */
-    /*  */
-
-    /* console.log('aaaaaaaaa', JSON.stringify(updated)); */
     await window.localStorage.setItem('timers', JSON.stringify(updated));
-    /* console.log(
-      'all timers',
-      JSON.parse(window.localStorage.getItem('timers'))
-    ); */
-    /*  window.localStorage.setItem("timers", JSON.stringify(updated)); */
-    /* this.setState({ timers: updated }); */
   }
 
   render() {
@@ -288,9 +289,10 @@ class Todo extends React.Component {
     let todosmap = this.state.todos.map((item, i) => (
       <div
         key={i + 'wrapper'}
-        className='task'
+        className={`task${this.state.theme}`}
         style={{
           border: item.timeleft < 0 ? '2px solid red' : 'none',
+          backgroundColor: 'rgba(0,0,0,0.2)',
         }}
       >
         <button
@@ -333,7 +335,7 @@ class Todo extends React.Component {
           ></Timer>
         }
         <h1 key={i + 'h1'} className='taskHeader'>
-          task {item.id}
+          {item.title}
         </h1>
         <h2 key={i + 'daysleft'}>Days left: {item.timeleft}</h2>
         <p key={i + 'deadline'}>Deadline: {item.deadline}</p>
@@ -382,7 +384,7 @@ class Todo extends React.Component {
 
     return (
       <>
-        <div className='allTasks'>{todosmap}</div>
+        <div className={`allTasks${this.state.theme}`}>{todosmap}</div>
         <EditPopup
           popup={this.state.popup}
           id={this.state.popupId}

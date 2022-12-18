@@ -1,24 +1,26 @@
-import axios from "axios";
-import React, { useState } from "react";
+import axios from 'axios';
+import React, { useState, useContext } from 'react';
 /* 
 import "./category.css"; */
-import "./categories.css";
+import './categories.css';
+import { ThemeContext } from './themeContext';
 
 const api = axios.create({
-  baseURL: "http://localhost:3010/categories",
+  baseURL: 'http://localhost:3010/categories',
 });
 
 const Categories = (props) => {
   //We use the props.currentCat for styling purposes. works.
   /* console.log("Categories prop currcat: ", props.currentCat); */
 
-  const [newCategory, setNewCategory] = useState("");
-  const [catToBeDeleted, setcatToBeDeleted] = useState("");
+  const [newCategory, setNewCategory] = useState('');
+  const [catToBeDeleted, setcatToBeDeleted] = useState('');
   const [fetched, setFetched] = useState(false);
   const [categoriesMap, setcategoriesMap] = useState(<></>);
+  const { theme } = useContext(ThemeContext);
 
   if (!fetched) {
-    api.get("http://localhost:3010/categories").then((response) => {
+    api.get('http://localhost:3010/categories').then((response) => {
       setcategoriesMap(response.data);
 
       setFetched(true);
@@ -32,12 +34,12 @@ const Categories = (props) => {
     //Check if category already exists
     //If not, add it.
     let isInDb = false;
-    await api.get("/").then((response) => {
+    await api.get('/').then((response) => {
       let data = response.data;
-      console.log("data: ", response);
+      console.log('data: ', response);
       data.forEach((element) => {
         if (
-          (newCategory === element.categoryname || newCategory === "all") &&
+          (newCategory === element.categoryname || newCategory === 'all') &&
           !isInDb
         ) {
           isInDb = true;
@@ -52,12 +54,12 @@ const Categories = (props) => {
     if (!isInDb) {
       //axios really helps with posting etc.
       await api
-        .post("http://localhost:3010/categories/", {
+        .post('http://localhost:3010/categories/', {
           categoryname: newCategory,
         })
         .then((response) => {
-          console.log("Successfully added the category");
-          alert("New category has been added!");
+          console.log('Successfully added the category');
+          alert('New category has been added!');
           window.location.reload(false);
         })
         .catch(function (error) {
@@ -74,15 +76,15 @@ const Categories = (props) => {
     e.preventDefault();
 
     //Check that we aren't removing all or general categories, as these are essential categories
-    if (catToBeDeleted === "all" || catToBeDeleted === "general") {
+    if (catToBeDeleted === 'all' || catToBeDeleted === 'general') {
       alert("You cannot delete categories 'all' or 'general'.");
       return;
     }
 
     //First we need to get the id of the category.
 
-    await api.get("/").then((response) => {
-      console.log("resp data", response.data);
+    await api.get('/').then((response) => {
+      console.log('resp data', response.data);
       response.data.forEach((element) => {
         console.log(element.categoryname === catToBeDeleted);
         if (element.categoryname === catToBeDeleted) {
@@ -97,7 +99,7 @@ const Categories = (props) => {
     if (isInDb) {
       //Make sure if the user really wants to delete the task
       let areyousure = window.confirm(
-        "Are you sure you want to delete this category FOREVER?"
+        'Are you sure you want to delete this category FOREVER?'
       );
       if (areyousure && isInDb) {
         //TODO: Set any tasks with the category to be deleted to have the category "normal"
@@ -107,7 +109,7 @@ const Categories = (props) => {
           .then(async () => {
             //get all tasks
             await axios
-              .get("http://localhost:3010/tasks")
+              .get('http://localhost:3010/tasks')
               .then((response) => {
                 //Push all tasks that have the category to an array for.. mapping?
                 response.data.forEach((task) => {
@@ -126,7 +128,7 @@ const Categories = (props) => {
                     deadline: task.deadline,
                     timeleft: task.timeleft,
                     hoursSpent: task.hoursSpent,
-                    category: "general",
+                    category: 'general',
                     completed: task.completed,
                   };
                   console.log(newTask);
@@ -146,20 +148,22 @@ const Categories = (props) => {
 
   return fetched && props.popup ? (
     <>
-      <div className="categories">
-        <div className="categories-select">
+      <div className='categories'>
+        <div className={`categories-select${theme}`}>
           {categoriesMap.map((category, i) => (
             <button
-              key={i + "button"}
+              key={i + 'button'}
               onClick={() => {
-                console.log("the button WAS pressed");
+                console.log('the button WAS pressed');
                 props.handler(category.categoryname);
               }}
               style={{
                 backgroundColor:
                   props.currentCat === category.categoryname
-                    ? "rgba(0, 0, 0, 0.4)"
-                    : "",
+                    ? theme === 'light'
+                      ? 'rgba(0, 0, 0, 0.1)'
+                      : '#ff1e37'
+                    : '',
               }}
             >
               {category.categoryname}
@@ -168,33 +172,47 @@ const Categories = (props) => {
         </div>
       </div>
 
-      <form className="categoryform" onSubmit={addTask}>
+      <form className='categoryform' onSubmit={addTask}>
         <label>New Category: </label>
         <input
-          type={"text"}
+          type={'text'}
           required
           value={newCategory}
           onChange={(eventObject) => {
             setNewCategory(eventObject.target.value);
           }}
         ></input>
-        <button type="submit">
-          {<span className="material-symbols-outlined">add</span>}
+        <button type='submit'>
+          {
+            <span
+              className='material-symbols-outlined'
+              style={{ color: '#6e0000' }}
+            >
+              add
+            </span>
+          }
         </button>
       </form>
 
-      <form className="categoryform" onSubmit={deleteCategory}>
+      <form className='categoryform' onSubmit={deleteCategory}>
         <label>Delete by name: </label>
         <input
-          type={"text"}
+          type={'text'}
           required
           value={catToBeDeleted}
           onChange={(eventObject) => {
             setcatToBeDeleted(eventObject.target.value);
           }}
         ></input>
-        <button type="submit">
-          {<span className="material-symbols-outlined">close</span>}
+        <button type='submit'>
+          {
+            <span
+              className='material-symbols-outlined'
+              style={{ color: '#6e0000' }}
+            >
+              close
+            </span>
+          }
         </button>
       </form>
     </>

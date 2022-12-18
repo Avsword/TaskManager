@@ -1,5 +1,30 @@
 .timer {
   position: relative;
-  /* left: 60%;
-  top: 20%; */
+}
+.timerButton,
+.stopwatch > button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.stopwatch {
+  display: flex;
+}
+.stopwatch-all {
+  display: flex;
+  margin-left: 5px;
+  width: fit-content;
+}
+.stopwatch-all > button {
+  width: 24px;
+  height: 24px;
+}
+.timerButtons {
+  display: flex;
 }

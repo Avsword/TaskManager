@@ -5,7 +5,6 @@ nav {
   justify-content: center;
 }
 a {
-  color: #6e0000;
   text-decoration: none;
 }
 ul {
@@ -14,7 +13,8 @@ ul {
 li {
   height: 10%;
 }
-.nav-item button {
+.nav-itemdark button,
+.nav-itemlight button {
   margin: 0;
 }
 .nav-item-wrapper {
@@ -25,7 +25,8 @@ li {
   flex-wrap: wrap;
 }
 
-.nav-item {
+.nav-itemdark,
+.nav-itemlight {
   display: inline;
   border: 2px solid black;
   border-radius: 4px;
@@ -36,7 +37,17 @@ li {
   transition: all 0.5s;
 }
 
-.nav-item:hover {
+.nav-itemlight:hover {
   background-color: #ebeee6;
   filter: brightness(80%);
+}
+.nav-itemdark:hover {
+  background-color: #1c161c;
+  filter: brightness(120%);
+}
+.nav-itemdark > a {
+  color: #fef8d8;
+}
+.nav-itemlight > a {
+  color: #6e0000;
 }

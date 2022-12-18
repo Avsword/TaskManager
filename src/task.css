@@ -1,4 +1,5 @@
-.allTasks,
+.allTaskslight,
+.allTasksdark,
 .allCompleted {
   display: flex;
   justify-content: center;
@@ -6,28 +7,26 @@
   flex-wrap: wrap;
 }
 /* Completed's colour will be adjusted later, but it will have the same inital settings for consistency */
-.task,
+.tasklight,
+.taskdark,
 .completed {
-  /* flex 1 for even sizing */
   flex: 1;
 
-  background-color: #ebeee6;
   filter: brightness(90%);
-  min-width: 33vw;
-  max-width: 45vw;
+  min-width: 60vw;
+  max-width: 80vw;
 
   max-height: 80%;
-  /* max-height: fit-content; */
+
   margin: 20px;
   padding: 15px;
-  /* px works way better than % */
+
   border-radius: 15px;
 
   transition: all 0.5s;
-
-  /* position: relative;
-
-  z-index: -1; */
+}
+.completed {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .task:hover,
 .completed:hover {
@@ -81,4 +80,25 @@
 .updownDropdown:hover .updownContent {
   display: inline-block;
   opacity: 100%;
+}
+
+@media screen and (min-width: 801px) {
+  .tasklight,
+  .taskdark,
+  .completed {
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 40vw;
+    max-width: 45vw;
+  }
+}
+@media screen and (min-width: 1025px) {
+  .tasklight,
+  .taskdark,
+  .completed {
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 20vw;
+    max-width: 30vw;
+  }
 }

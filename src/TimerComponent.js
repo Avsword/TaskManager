@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './TimerComponent.css';
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -7,32 +8,19 @@ const api = axios.create({
 });
 
 function Timer(props) {
-  const [ID, setID] = useState(null);
   const [taskid, setTaskid] = useState(props.taskid);
   const [fetchorlocal, setFetchorlocal] = useState(props.fetchOrLocalstorage);
 
   /* First when we open the tasks, continue active tasks? */
   const [firstRender, setFirstRender] = useState(true);
   const [startNewTimer, setStartNewTimer] = useState(true);
-  /* tracktimers(time, taskid) */
-
   const [active, setActive] = useState(false);
-
   const [time, settime] = useState(0);
-
   const [startdate, setStartdate] = useState(0);
-  /**
- * "taskid": 1,
-      "active": true,
-      "timeInSeconds": 0,
-      "startedDate": 0
- */
+
+  const [visible, setVisible] = useState(false);
 
   const fetch = async (activetaskfound) => {
-    /* console.log(
-      "just... get the ref in timercomponent you dumbass?",
-      JSON.parse(window.localStorage.getItem("timers"))
-    ); */
     const timersFromLocal = await JSON.parse(
       window.localStorage.getItem('timers')
     );
@@ -40,28 +28,23 @@ function Timer(props) {
       timersFromLocal.forEach((timerFromStorage) => {
         if (timerFromStorage.id === taskid) {
           if (timerFromStorage.time !== 0) {
-            console.log('localstorage for: ', taskid);
             setActive(timerFromStorage.active);
             settime(timerFromStorage.time);
             setStartdate(timerFromStorage.startdate);
             setStartNewTimer(timerFromStorage.newtimer);
             setFirstRender(false);
             activetaskfound = true;
-            console.log('Timer was found in local storage.');
           }
         }
       });
     }
     if (!activetaskfound) {
-      console.log('fetching for: ', taskid);
       await api
         .get('/')
         .then((response) => {
           let allTimers = response.data;
           allTimers.forEach((timer) => {
             if (timer.taskid === props.taskid && timer.completed === false) {
-              console.log('aaaaaa');
-
               settime(timer.time);
               setStartdate(timer.startdate);
               handleStartPause();
@@ -90,23 +73,11 @@ function Timer(props) {
     //Also handle prop changed (usually resulting from rearranging the tasks)
     setTaskid(props.taskid);
     let activetaskfound = false;
-
-    console.log(
-      'IN THE TIMER COMPONENT, THE FETCH WAS, ',
-      fetchorlocal,
-      'FOR TASK ',
-      taskid
-    );
-
     if (firstRender) {
       if (props.fetchOrLocalstorage === 'fetch') {
         fetch(activetaskfound);
       }
     }
-
-    console.log(
-      '||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||'
-    );
   }, [props.fetchOrLocalstorage, fetchorlocal]);
 
   React.useEffect(() => {
@@ -114,19 +85,6 @@ function Timer(props) {
     //True, since we've..yeah.
     let activetaskfound = false;
     fetch(activetaskfound);
-    /*  console.log(
-      "Task change detected, parent timers at the time were",
-      props.parenttimers,
-      "for id of",
-      taskid
-    );
-    props.parenttimers.forEach((timer) => {
-      if (timer.id === taskid) {
-        settime(timer.time);
-        setActive(timer.active);
-        setStartNewTimer(timer.newtimer);
-      }
-    }); */
   }, [props.taskid, taskid]);
 
   React.useEffect(() => {
@@ -159,7 +117,6 @@ function Timer(props) {
     //Fetch. It'll stop at the localstorage spot most likely, just to update the startnewtimer
 
     if (!active) {
-      console.log('Start & render', startNewTimer, firstRender);
       if (startNewTimer && !firstRender) {
         console.log('date now: ', Date.now());
         const newtimer = {
@@ -172,7 +129,6 @@ function Timer(props) {
         };
         setStartdate(Date.now());
         await api.post('/', newtimer).then(() => {
-          alert('New task was posted to the db');
           setStartNewTimer(false);
         });
       }
@@ -192,17 +148,10 @@ function Timer(props) {
 
     await api.get('/').then((response) => {
       let allTimers = response.data;
-      console.log('ALL TIMERS: ', allTimers);
-      console.log('Current taskid: PROPS, NORMAL ', props.taskid, ' ', ID);
+
       allTimers.forEach((timer) => {
-        console.log(
-          `timer taskid: ${timer.taskid} props taskid: ${props.taskid} and completed status is: ${timer.completed}`
-        );
         if (timer.taskid === props.taskid && timer.completed === false) {
-          console.log('TRUE FOR: ', timer);
-          setID(timer.id);
           timerID = timer.id;
-          console.log('ID IS NOW: ', ID);
         }
       });
     });
@@ -215,49 +164,69 @@ function Timer(props) {
       enddate: Date.now(),
       completed: true,
     };
-    console.log('Before put call, id is: ', ID);
-    console.log('Before put call, timer id let is: ', timerID);
+
     await api.put(`/${timerID}`, postTimer).then(function (response) {
-      alert('Data sent to server');
       settime(0);
       setStartNewTimer(true);
     });
   };
 
+  const handleVisibility = () => {
+    setVisible(!visible);
+  };
+  const styling = {
+    width: visible ? '90%' : '0%',
+    opacity: visible ? '100%' : '0%',
+    transition: 'opacity 0.5s linear,width 0.4s linear ',
+  };
+
   return (
     <>
       <div className='stopwatch'>
-        <h1 style={{ color: active ? 'green' : 'red' }}>
-          props {props.taskid} start {startdate} newtimer
-          {startNewTimer.toString()}
-        </h1>
-        <span className='stopwatch-minutes'>
-          {'0' + Math.floor((time / (1000 * 60 * 60)) % 24)}:
-        </span>
-        <span className='stopwatch-minutes'>
-          {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
-        </span>
-        <span className='stopwatch-seconds'>
-          {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
-        </span>
-        <br></br>
-        <span>{time}</span>
-
         <button
           onClick={() => {
-            handleStartPause();
+            handleVisibility();
           }}
         >
-          <span className='material-symbols-outlined'>play_pause</span>
+          <span
+            className='material-symbols-outlined'
+            style={{ color: active ? '#6e0000' : '' }}
+          >
+            timer
+          </span>
         </button>
+        <div className='stopwatch-all'>
+          <span className='stopwatch-minutes' style={styling}>
+            {'0' + Math.floor((time / (1000 * 60 * 60)) % 24)}:
+          </span>
+          <span className='stopwatch-minutes' style={styling}>
+            {('0' + Math.floor((time / 60000) % 60)).slice(-2)}:
+          </span>
+          <span className='stopwatch-seconds' style={styling}>
+            {('0' + Math.floor((time / 1000) % 60)).slice(-2)}
+          </span>
+          <div style={styling} className='timerButtons'>
+            <button
+              className='timerButton'
+              onClick={() => {
+                handleStartPause();
+              }}
+            >
+              <span className='material-symbols-outlined'>play_pause</span>
+            </button>
 
-        <button
-          onClick={() => {
-            handleStop();
-          }}
-        >
-          <span className='material-symbols-outlined'>stop</span>
-        </button>
+            <button
+              className='timerButton'
+              onClick={() => {
+                handleStop();
+              }}
+            >
+              <span className='material-symbols-outlined' style={styling}>
+                stop
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );

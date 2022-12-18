@@ -1,27 +1,30 @@
-import React, { useEffect, useState } from "react";
-import "./EditPopup.css";
-import "./newTask.css";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import './EditPopup.css';
+import './newTask.css';
+import axios from 'axios';
+import { useContext } from 'react';
+import { ThemeContext } from './themeContext';
 const api = axios.create({
-  baseURL: "http://localhost:3010/tasks",
+  baseURL: 'http://localhost:3010/tasks',
 });
 
 //TODO: Should be able to just... use the newtask component with little to no editing to get this to work. Otherwise this works like a dream rn
 
 function EditPopup(props) {
+  const { theme } = useContext(ThemeContext);
   const id = props.id;
   //Add responsivity for adding a new task with some feedback on the status. (If the server is really slow, we could need this)
   const [pendingrequest, setPendingrequest] = useState(false);
 
   //States for each input field for submitting to the db
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   //Could use current date as default deadline, but I don't currently see the need for that.
-  const [deadline, setDeadline] = useState("");
-  const [hoursSpent, sethoursSpent] = useState("");
-  const [category, setCategory] = useState("general");
+  const [deadline, setDeadline] = useState('');
+  const [hoursSpent, sethoursSpent] = useState('');
+  const [category, setCategory] = useState('general');
 
-  const [allcategories, setallcategories] = useState("");
+  const [allcategories, setallcategories] = useState('');
 
   //We need a new state for fetching all of the categories for the dropdown.
 
@@ -40,7 +43,7 @@ function EditPopup(props) {
       sethoursSpent(response.data.hoursSpent);
     });
     //Then set ALL of the available categories in order for the dropdown to work
-    api.get("http://localhost:3010/categories").then((response) => {
+    api.get('http://localhost:3010/categories').then((response) => {
       //Remove "all"-category
       response.data.shift();
 
@@ -79,16 +82,19 @@ function EditPopup(props) {
     props.popuphandler();
   };
   return props.popup ? (
-    <div className="EditPopup">
-      <div className="EditPopup-inner">
-        <button className="exitPopup" onClick={props.popuphandler}>
-          <span className="material-symbols-outlined">close</span>
+    <div className='EditPopup'>
+      <div
+        className='EditPopup-inner'
+        style={{ backgroundColor: theme === 'light' ? '#ebeee6' : '#1c161c' }}
+      >
+        <button className='exitPopup' onClick={props.popuphandler}>
+          <span className='material-symbols-outlined'>close</span>
         </button>
         <form onSubmit={handleTaskSubmit}>
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Title: </label>
             <input
-              type={"text"}
+              type={'text'}
               required
               value={title}
               onChange={(eventObject) => {
@@ -97,7 +103,7 @@ function EditPopup(props) {
             ></input>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Description: </label>
             <textarea
               required
@@ -108,10 +114,10 @@ function EditPopup(props) {
             ></textarea>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Deadline: </label>
             <input
-              type={"date"}
+              type={'date'}
               required
               value={deadline}
               onChange={(eventObject) => {
@@ -120,7 +126,7 @@ function EditPopup(props) {
             ></input>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Task category: </label>
             <select
               required
@@ -137,10 +143,10 @@ function EditPopup(props) {
             </select>
           </div>
 
-          <span className="newTaskSubmit">
+          <span className='newTaskSubmit'>
             {!pendingrequest && <button>Update task</button>}
             {pendingrequest && (
-              <span className="material-symbols-outlined">refresh</span>
+              <span className='material-symbols-outlined'>refresh</span>
             )}
           </span>
         </form>

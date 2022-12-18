@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 const api = axios.create({
-  baseURL: "http://localhost:3010/tasks",
+  baseURL: 'http://localhost:3010/tasks',
 });
 
 const flipCompleted = async (id, completed, canReload) => {
@@ -10,17 +10,17 @@ const flipCompleted = async (id, completed, canReload) => {
   await api.get(`/${id}`).then((response) => {
     //List full of all the tasks
     data = response.data;
-    console.log("obj after call", data);
+    console.log('obj after call', data);
   });
 
   //Flip the completed
   data.completed = !completed;
 
-  api.put(`/${id}`, data).then((response) => {
+  await api.put(`/${id}`, data).then((response) => {
     console.log(response);
   });
   if (canReload || canReload === undefined) {
-    window.location.reload(false);
+    await window.location.reload(false);
   }
 
   /* !completed
@@ -30,7 +30,7 @@ const flipCompleted = async (id, completed, canReload) => {
 const deleteTask = (id) => {
   //Make sure if the user really wants to delete the task
   let areyousure = window.confirm(
-    "Are you sure you want to delete this task FOREVER?"
+    'Are you sure you want to delete this task FOREVER?'
   );
   if (areyousure) {
     axios

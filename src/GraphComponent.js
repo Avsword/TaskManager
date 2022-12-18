@@ -36,14 +36,14 @@ function Graph() {
     new Date(Date.now()).toISOString().split('T')[0]
   );
   const [startDate, setStartDate] = useState(Date.now() - 604800000);
-  const [endDate, setEndDate] = useState(5671228863007); /*Date.now() */
+  const [endDate, setEndDate] = useState(Date.now()); /*Date.now() */
   const [tasksShown, setTasksShown] = useState('all');
   const [rawData, setRawData] = useState({});
   const [indexToTaskID, setIndexToTaskID] = useState([]);
   const [useMinutes, setUseMinutes] = useState(true);
+  const [totalTime, setTotalTime] = useState(0);
 
   useEffect(() => {
-    console.log('RERENDER');
     let completedTimersTaskIDs = [];
     let fullTimers = [];
     const minutesOrHours = useMinutes ? 60000 : 3600000;
@@ -80,9 +80,6 @@ function Graph() {
                 //If it isn't being counted, then add it to the array
                 fullTimers.push({ taskid: log.taskid, time: log.time });
               }
-            } else if (log.taskid === tasksShown) {
-              //Check also if the id is the same that we want
-              console.log(`OK NOW ITS THE SAME AS THE ONE WE PRESSED:`, log);
             }
 
             //We are going to use the timerIDs which are logged to fetch the actual task labels from another endpoint
@@ -120,7 +117,7 @@ function Graph() {
           });
           for (let index = 0; index < fullTimers.length; index++) {
             const element = fullTimers[index];
-            console.log('Timer element: ', element);
+
             letLabels.push(element.title);
             letdata.push(element.time / minutesOrHours);
           }
@@ -132,43 +129,34 @@ function Graph() {
                 //Check if the task id is the correct one
                 if (element.taskid === tasksShown) {
                   //We want to get each DAY logged, so... check if the date is the same?
-                  let ms = new Date(element.startdate);
+
                   let enddate = new Date(element.enddate);
-                  let date = `${ms.getFullYear()}-${
-                    ms.getMonth() + 1
-                  }-${ms.getDate()}`;
+
                   let enddatedate = `${enddate.getFullYear()}-${
                     enddate.getMonth() + 1
                   }-${enddate.getDate()}`;
-                  console.log(`DATE: ${date} and end date is=${enddatedate}`);
+                  console.log(enddatedate);
 
-                  if (fullTimers.some((e) => e.day === enddatedate)) {
-                    console.log('Multiple records on same day');
-                  } else if (
-                    element.startdate >= startDate &&
-                    element.enddate <= endDate
-                  ) {
-                    console.log(
-                      'push to fulltimers for: ',
-                      element.startdate,
-                      'when the starting and end dates are: ',
-                      inputStartDate
-                    );
-                    console.log(element.startdate >= startDate);
-                    console.log(element.enddate <= endDate);
-
-                    letLabels.push(enddatedate);
-                    letdata.push(element.time / minutesOrHours);
-                    fullTimers.push({ day: enddatedate, time: element.time });
+                  if (!fullTimers.some((e) => e.day === enddatedate)) {
+                    if (
+                      element.startdate >= startDate &&
+                      element.enddate <= endDate
+                    ) {
+                      letLabels.push(enddatedate);
+                      letdata.push(element.time / minutesOrHours);
+                      fullTimers.push({ day: enddatedate, time: element.time });
+                    }
                   }
                 }
               });
             });
         }
-        console.log('Fulltimers with labels: ', fullTimers);
-
-        await console.log('labels: ', letLabels);
-        await console.log('data: ', letdata);
+        let sum = 0;
+        await letdata.forEach((log) => {
+          console.log(typeof log);
+          sum += log;
+        });
+        await setTotalTime(sum.toFixed(2));
         await setValidGraphs({
           labels: letLabels,
           datasets: [
@@ -181,9 +169,8 @@ function Graph() {
             },
           ],
         });
-
-        await console.log('Valid Graphs: CONFIG: ', validGraphs);
       });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, tasksShown, useMinutes]);
 
@@ -201,38 +188,42 @@ function Graph() {
   return (
     <div className='graphComponent'>
       <form>
-        <label>Set Starting Date</label>
-        <input
-          type={'date'}
-          required
-          value={inputStartDate}
-          onChange={(eventObject) => {
-            setInputStartDate(
-              new Date(eventObject.target.value).toISOString().split('T')[0]
-            );
-            var result = new Date(eventObject.target.value);
+        <div className='inputStart'>
+          <label>Set Starting Date</label>
+          <input
+            type={'date'}
+            required
+            value={inputStartDate}
+            onChange={(eventObject) => {
+              setInputStartDate(
+                new Date(eventObject.target.value).toISOString().split('T')[0]
+              );
+              var result = new Date(eventObject.target.value);
 
-            result.setDate(result.getDate() + 7);
+              result.setDate(result.getDate() + 7);
 
-            //automatically set the enddate to +7 days
-            /* setInputEndDate(eventObject.target.value + 7); */
-            setStartDate(Date.parse(eventObject.target.value));
-          }}
-        ></input>
+              //automatically set the enddate to +7 days
+              /* setInputEndDate(eventObject.target.value + 7); */
+              setStartDate(Date.parse(eventObject.target.value));
+            }}
+          ></input>
+        </div>
         <br></br>
-        <label>Set End Date</label>
-        <input
-          type={'date'}
-          required
-          value={inputEndDate}
-          min={inputStartDate}
-          onChange={(eventObject) => {
-            setInputEndDate(
-              new Date(eventObject.target.value).toISOString().split('T')[0]
-            );
-            setEndDate(Date.parse(eventObject.target.value));
-          }}
-        ></input>
+        <div className='inputEnd'>
+          <label>Set End Date</label>
+          <input
+            type={'date'}
+            required
+            value={inputEndDate}
+            min={inputStartDate}
+            onChange={(eventObject) => {
+              setInputEndDate(
+                new Date(eventObject.target.value).toISOString().split('T')[0]
+              );
+              setEndDate(Date.parse(eventObject.target.value));
+            }}
+          ></input>
+        </div>
       </form>
       <div className='toggleHours'>
         <button
@@ -265,6 +256,9 @@ function Graph() {
       <div className='graph'>
         <Bar data={validGraphs} ref={chartRef} onClick={onClick}></Bar>
       </div>
+      <h2 style={{ textAlign: 'center' }}>
+        Total {useMinutes ? 'minutes' : 'hours'} for time period: {totalTime}
+      </h2>
     </div>
   );
 }
