@@ -7,6 +7,7 @@ A task managment and time tracking app created with ReactJS and JSON server
 <img src="https://user-images.githubusercontent.com/90607504/209972831-31d0119a-59fe-4d3c-84d3-f1f5b8de4c24.png" alt="Dark mode main view" width="200" />
 <img src="https://user-images.githubusercontent.com/90607504/209972976-557a8f2a-2e29-48b3-a1ef-06fc6187f0c9.png" alt="Light mode main view" width="200" />
 <br />
+
 ## Tasks - tab
 <img src="https://user-images.githubusercontent.com/90607504/209973111-5a966287-9633-4a75-a34b-fc9b0edfff47.png" alt="View of all of the pending tasks" width="500" /><br />
 Sort by categories
