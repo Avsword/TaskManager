@@ -14,6 +14,7 @@ Sort by categories
 <img src="https://user-images.githubusercontent.com/90607504/209973355-0f8ce747-a084-4f18-b776-eb313f7826c0.png" alt="View of the category dropdown" width="500" /><br />
 Add New tasks
 <img src="https://user-images.githubusercontent.com/90607504/209973271-6120b68e-223b-40fa-9f6d-5afa5e0db668.png" alt="View of adding a new task" width="500" /><br />
+
 ## Info - tab
 Bar graph to reflect your tracked time!
 <img src="https://user-images.githubusercontent.com/90607504/209973586-67f478aa-b57f-4a8d-a9b2-d8701eb83d26.png" alt="Bar graph of tracked time for all tasks" width="500" /><br />
