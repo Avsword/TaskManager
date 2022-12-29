@@ -23,8 +23,8 @@ Click on a bar to see daily logs for a task
 
 # Get started
 ```
-git clone git@github.com:Avsword/PA_React.git
-cd PA_React
+git clone git@github.com:Avsword/TaskManager.git
+cd TaskManager
 npm install
 # Start the server
 npx json-server -H localhost -p 3010 -w ./db.json
