@@ -1,22 +1,22 @@
-import { useState } from "react";
-import "./newTask.css";
-import axios from "axios";
+import { useState } from 'react';
+import './newTask.css';
+import axios from 'axios';
 const api = axios.create({
-  baseURL: "http://localhost:3010/tasks",
+  baseURL: 'http://localhost:3010/tasks',
 });
 
 const NewTask = () => {
   //Add responsivity for adding a new task with some feedback on the status. (If the server is really slow, we could need this)
   const [pendingrequest, setPendingrequest] = useState(false);
   const [fetched, setFetched] = useState(false);
-  const [categories, setCategories] = useState("All");
+  const [categories, setCategories] = useState('All');
 
   //States for each input field for submitting to the db
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   //Could use current date as default deadline, but I don't currently see the need for that.
-  const [deadline, setDeadline] = useState("");
-  const [category, setCategory] = useState("general");
+  const [deadline, setDeadline] = useState('');
+  const [category, setCategory] = useState('general');
 
   //Default values for different variables within each task. Id will be automatically updated by axios I think
   //timeleft will be handled later?
@@ -27,7 +27,7 @@ const NewTask = () => {
 
   //Get and set the categories :)
   if (!fetched) {
-    api.get("http://localhost:3010/categories").then((response) => {
+    api.get('http://localhost:3010/categories').then((response) => {
       response.data.shift();
       setCategories(response.data);
       /* console.log("resp ", response.data);
@@ -54,11 +54,11 @@ const NewTask = () => {
 
     //axios really helps with posting etc.
     api
-      .post("/", newTask)
+      .post('/', newTask)
       .then(function (response) {
         setPendingrequest(false);
-        console.log("Successfully added the task");
-        alert("New task has been added!");
+        console.log('Successfully added the task');
+        alert('New task has been added!');
         window.location.reload(false);
       })
       .catch(function (error) {
@@ -67,13 +67,13 @@ const NewTask = () => {
   };
   return fetched ? (
     <>
-      <h2 className="newTaskHeader">Add a new task</h2>
-      <div className="newTaskWrapper">
+      <h2 className='newTaskHeader'>Add a new task</h2>
+      <div className='newTaskWrapper'>
         <form onSubmit={handleTaskSubmit}>
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Title:</label>
             <input
-              type={"text"}
+              type={'text'}
               required
               value={title}
               onChange={(eventObject) => {
@@ -82,7 +82,7 @@ const NewTask = () => {
             ></input>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Description: </label>
             <textarea
               required
@@ -93,10 +93,10 @@ const NewTask = () => {
             ></textarea>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Deadline: </label>
             <input
-              type={"date"}
+              type={'date'}
               required
               value={deadline}
               onChange={(eventObject) => {
@@ -105,7 +105,7 @@ const NewTask = () => {
             ></input>
           </div>
 
-          <div className="newTaskInput">
+          <div className='newTaskInput'>
             <label>Task category: </label>
             <select
               required
@@ -121,10 +121,10 @@ const NewTask = () => {
               ))}
             </select>
           </div>
-          <span className="newTaskSubmit">
+          <span className='newTaskSubmit'>
             {!pendingrequest && <button>Add task</button>}
             {pendingrequest && (
-              <span className="material-symbols-outlined">refresh</span>
+              <span className='material-symbols-outlined'>refresh</span>
             )}
           </span>
         </form>
