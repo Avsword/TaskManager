@@ -2,6 +2,19 @@
 
 A task managment and time tracking app created with ReactJS and JSON server
 
+# Docker link:
+https://hub.docker.com/repository/docker/avsword/taskmanager/general <br />
+You can just pretty much 
+```
+docker pull avsword/taskmanager:latest
+```
+<br />
+After that you should be able to run the container with 
+
+```
+Docker run -p 3000:3000 taskmanager
+```
+
 # Screenshots
 ## Dark and Light - mode views
 <img src="https://user-images.githubusercontent.com/90607504/209972831-31d0119a-59fe-4d3c-84d3-f1f5b8de4c24.png" alt="Dark mode main view" width="200" />
