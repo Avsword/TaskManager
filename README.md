@@ -14,6 +14,8 @@ After that you should be able to run the container with
 ```
 Docker run -p 3000:3000 taskmanager
 ```
+TODO:
+Add backend support. Currently not working.
 
 # Screenshots
 ## Dark and Light - mode views
